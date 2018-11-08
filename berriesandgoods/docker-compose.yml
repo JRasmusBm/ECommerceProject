@@ -10,3 +10,11 @@ services:
       - .:/usr/src/app
     ports:
       - "80:8000"
+  test:
+    container_name: berriesandgoods_test
+    restart: always
+    build: .
+    command:
+      bash -c "pipenv run coverage run -m pytest --ignore=data -vv
+      --disable-warnings; pipenv run coverage report -m; pipenv run coverage
+      html"
