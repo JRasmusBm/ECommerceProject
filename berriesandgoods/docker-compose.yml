@@ -1,0 +1,12 @@
+version: "2"
+services:
+  app:
+    container_name: berriesandgoods
+    restart: always
+    build: .
+    network_mode: "bridge"
+    command: "pipenv run bash -c ./start.sh"
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "8000:8000"
