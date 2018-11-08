@@ -1,0 +1,11 @@
+sudo: required
+services:
+  - docker
+
+env:
+  COMPOSE_VERSION: 2
+
+script:
+  - cd berriesandgoods/
+  - docker-compose build
+  - docker-compose run test
