@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% if page_title %}
+    <title>Berries and Goods | {{ page_title }}</title>
+    {% else %}
+    <title>Berries and Goods</title>
+    {% endif %}
+  </head>
+  <body>
+    {% block content %}
+    {% endblock %}
+  </body>
+</html>
