@@ -6,9 +6,24 @@
     {% else %}
     <title>Berries and Goods</title>
     {% endif %}
+    <style>
+      header {
+        width: 100vw;
+        height: 50px;
+        border-bottom: 3px solid #acac86;
+        padding: 0 20px;
+      }
+      header h1 {
+        font-family: arial;
+        color: #1f1f14;
+      }
+      {%block styles%}{%endblock%}
+    </style>
   </head>
   <body>
-    {% block content %}
-    {% endblock %}
+    <header>
+      <h1>Berries and Goods</h1>
+    </header>
+    {% block content %} {% endblock %}
   </body>
 </html>

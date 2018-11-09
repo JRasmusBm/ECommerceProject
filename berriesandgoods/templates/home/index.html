@@ -1,5 +1,13 @@
-{% extends "index.html" %}
+{% extends "index.html" %} 
+
+{% block styles%}
+#content {
+  padding: 10px;
+}
+{% endblock %}
 
 {% block content %}
-Home Page
+<div id="content">
+  <p>Home Page</p>
+</div>
 {% endblock %}
