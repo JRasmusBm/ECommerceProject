@@ -12,4 +12,4 @@
 
 ### Deploy
 
-4.  Run `docker-compose down; docker-compose up`
+4.  Run `docker-compose down; docker-compose up -d`
