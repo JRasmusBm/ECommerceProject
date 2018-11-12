@@ -8,5 +8,5 @@ RUN pipenv install --dev --ignore-pipfile
 
 copy . .
 
-EXPOSE 8000
+EXPOSE 80
 

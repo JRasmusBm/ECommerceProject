@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/usr/src/app
     ports:
-      - "8000:8000"
+      - "80:8000"
   test:
     container_name: berriesandgoods_test
     restart: always
