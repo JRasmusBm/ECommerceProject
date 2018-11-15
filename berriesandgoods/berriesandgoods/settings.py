@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['localhost', 'lab.giffeln.se']
 
 INSTALLED_APPS = [
     'berryBase',
+    'home',
     'about',
     'django.contrib.admin',
     'django.contrib.auth',

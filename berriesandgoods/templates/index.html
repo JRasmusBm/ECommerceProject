@@ -4,69 +4,40 @@
     {% if page_title %}
     <title>Berries and Goods | {{ page_title }}</title>
     {% else %}
-    <title> Berries and Goods </title>
+    <title>Berries and Goods</title>
     {% endif %}
-    
+
     <style>
-      header {
-        width: 100vw;
-        height: 60px;
-        border-bottom: 3px solid #acac86;
-        display: flex;
-        align-items: center;
-      }
-      header h1 {
-        font-family: arial;
-        color: #1f1f14;
-        margin: 0 20px;
-      }
-      header a {
-        margin-left: 40px;
-        text-decoration: none;
-        color: #1f1f14;
-      }
-        
-      {%block styles%}{%endblock%}
-        
-        
-    .sidebar {
-    height: 100%;
-    width: 100px; /* Set the width of the sidebar */
-    position: fixed; 
-   
-    top: 25; 
-    left: 0;
-    background-color: #123;
-    overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 100px;
+        header {
+          width: 100vw;
+          height: 60px;
+          border-bottom: 3px solid #acac86;
+          display: flex;
+          align-items: center;
+        }
+        header h1 {
+          font-family: arial;
+          color: #1f1f14;
+          margin: 0 20px;
+        }
+        header a {
+          margin-left: 40px;
+          text-decoration: none;
+          color: #1f1f14;
+        }
 
-    }
-    .sidebar a {
-        padding: 10px, 2px, 100px, 10px;
-        font-size: 30px;
-        display:block;
-    }  
+        {%block styles%}{%endblock%}
+
     </style>
+  </head>
+  <body>
+    <header>
+      <h1>Berries and Goods</h1>
+      <a href="{% url 'home:index' %}">Home</a>
+      <a href="{% url 'items:index' %}">Browse Items</a>
+      <a href="{% url 'about:index' %}">About</a>
+    </header>
 
-      
-    </head>
-    <body>
-      <header>
-          <h1>Berries and Goods</h1>
-          <a href="{% url 'index' %}">Home</a>
-          <a href="{% url 'about:index' %}">About</a>
-      </header>
-
-
-      <div class = "sidebar">
-        <a href="{% url 'berry:index' %}">Berries </a>
-        <a href="#">Goods </a>
-        <a href="#">About </a>
-        <a href="#">Contact </a>
-      </div>
-
-      {% block content %} {% endblock %}
-
-
-    </body>
+    {% block content %} {% endblock %}
+  </body>
 </html>
