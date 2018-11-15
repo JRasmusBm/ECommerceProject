@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name="index"),
     path('about/', include(('about.urls', 'about'), namespace="about")),
+    path('berry/', include(('berryBase.urls', 'berry'), namespace="berry"))
 ]
