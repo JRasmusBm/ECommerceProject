@@ -1,0 +1,33 @@
+version: "2"
+services:
+  djangoapp:
+    container_name: berriesandgoods
+    restart: always
+    build: .
+    command: ./start.sh
+    volumes:
+      - .:/opt/services/djangoapp/src
+    networks:
+      - nginx_network
+  nginx:
+    container_name: berriesandgoods_nginx
+    image: nginx:1.13
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - nginx_network
+    depends_on:
+      - djangoapp
+  test:
+    container_name: berriesandgoods_test
+    restart: always
+    build: .
+    command:
+      bash -c "coverage run -m pytest --ignore=data -vv --disable-warnings;
+      coverage report -m; coverage html"
+
+networks:
+  nginx_network:
+    driver: bridge

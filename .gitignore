@@ -1,1 +1,3 @@
-.idea/
+coverage_html_report/
+htmlcov/
+.coverage
