@@ -1,0 +1,14 @@
+{% extends "index.html" %} 
+
+{% block styles%}
+#item-content {
+  padding: 10px;
+  width: 100%;
+}
+{% endblock %}
+
+{% block content %}
+<div id="item-content">
+  <h1>{{item.name}}</h1>
+</div>
+{% endblock %}

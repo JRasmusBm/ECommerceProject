@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% if page_title %}
     <title>Berries and Goods | {{ page_title }}</title>
     {% else %}
     <title>Berries and Goods</title>
     {% endif %}
+
     <style>
+      body {
+        padding: 5px;
+        background: #eeffcc;
+        margin-top: 0;
+      }
       header {
-        width: 100vw;
-        height: 60px;
+        width: 100%;
+        padding: 10px;
+        font-size: 0.9em;
         border-bottom: 3px solid #acac86;
         display: flex;
         align-items: center;
@@ -24,15 +32,30 @@
         text-decoration: none;
         color: #1f1f14;
       }
+      @media only screen and (max-width: 600px) {
+          header {
+              flex-direction: column;
+              align-items: center;
+          }
+          header h1 {
+            margin-bottom: 10px;
+          }
+          header a {
+            margin: 0;
+            padding: 5px;
+          }
+      }
       {%block styles%}{%endblock%}
     </style>
   </head>
   <body>
     <header>
       <h1>Berries and Goods</h1>
-      <a href="{% url 'index' %}">Home</a>
+      <a href="{% url 'home:index' %}">Home</a>
+      <a href="{% url 'items:index' %}">Browse Items</a>
       <a href="{% url 'about:index' %}">About</a>
     </header>
+
     {% block content %} {% endblock %}
   </body>
 </html>

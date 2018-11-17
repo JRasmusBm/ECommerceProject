@@ -3,6 +3,8 @@
 branch = True
 source = berriesandgoods
          about
+         berryBase
+         home
 
 [report]
 # Regexes for lines to exclude from consideration

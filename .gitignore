@@ -1,1 +1,5 @@
+coverage_html_report/
 __pycache__/
+htmlcov/
+.coverage
+berriesandgoods/static/**/*
