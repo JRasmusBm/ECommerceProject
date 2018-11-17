@@ -18,3 +18,14 @@ services:
       bash -c "pipenv run coverage run -m pytest --ignore=data -vv
       --disable-warnings; pipenv run coverage report -m; pipenv run coverage
       html"
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: berries
+      POSTGRES_PASSWORD: berries
+      POSTGRES_DB: berry_db
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
