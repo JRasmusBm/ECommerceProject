@@ -5,6 +5,7 @@ source = berriesandgoods
          about
          berryBase
          home
+         product_manager
 
 [report]
 # Regexes for lines to exclude from consideration

@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "berryBase",
     "home",
     "about",
+    "product_manager",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
