@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 gunicorn = "*"
 "psycopg2" = "*"
+pytest-django = "*"
 
 [dev-packages]
 coverage = "*"
