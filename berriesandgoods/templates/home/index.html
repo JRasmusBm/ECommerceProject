@@ -1,13 +1,40 @@
-{% extends "index.html" %} 
+{% extends "index.html" %}
 
 {% block styles%}
 #content {
   padding: 10px;
+  .wrapper {
+     display: grid;
+  }
+.grid {
+  height: 100%;
+  display: grid;
+    grid-column-gap: 50px;
+    grip-row-gap: 50px;
+    grid-template-columns: auto auto auto;
+    background-color: #778899;
+    padding: 10px;
+}
+.item {
+  background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+    }
 }
 {% endblock %}
 
 {% block content %}
 <div id="content">
-  <p>Home Page</p>
+
+  <div class = "grid">
+      <div class="item">Hottest Berries</div>
+      <div class="item">Cheapest Berries</div>
+      <div class="item">Luxery Berries</div>
+      <div class="item">Festive Pickings</div>
+      <div class="item">Bla</div>
+      <div class="item">Pack Deals</div>
+  </div>
+
 </div>
 {% endblock %}

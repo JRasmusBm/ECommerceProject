@@ -1,0 +1,81 @@
+{% extends "index.html" %} 
+{% load static %}
+
+{% block styles%}
+#item-index-overview {
+  display: grid;
+  margin-top: 10px;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+#item-index-overview a {
+  text-decoration: none;
+  color: inherit;
+}
+.item-card {
+  padding: 5px;
+  min-height: 150px;
+  background: white;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.3);
+  transition: 0.3s;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 50% 1fr;
+  grid-template-areas: 
+    "item-image item-image"
+    "item-name item-price";
+}
+.item-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
+}
+.item-card h3 {
+  font-family: arial;
+  margin: 0;
+}
+.item-name {
+  grid-area: item-name;
+  justify-self: center;
+  align-self: center;
+}
+.item-price-tag {
+  grid-area: item-price-tag;
+}
+.item-price {
+  grid-area: item-price;
+  justify-self: center;
+  align-self: center;
+}
+.item-image {
+  grid-area: item-image;
+  min-height:150px;
+}
+.item-image img {
+  width: 100%;
+}
+{% endblock %}
+
+{% block content %}
+<div id="item-index-overview">
+{% for item in items %}
+<a href="{% url "items:details" item.item_id %}">
+<div class="item-card">
+  <div class="item-image">
+    {% if item.image %}
+      <img src="{% static item.image %}" />
+    {% else %}
+      <img src="{% static 'berriesandgoods/img/no-image-icon.jpg' %}" />
+    {% endif %}
+  </div>
+  <div class="item-name">
+    <h3>{{item.name}}</h3>
+  </div>
+  <div class="item-price">{{item.price}} :- / {{item.unit}}</div>
+</div>
+</a>
+{% endfor %}
+</div>
+{% endblock %}
