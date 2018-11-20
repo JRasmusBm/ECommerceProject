@@ -11,6 +11,9 @@ services:
       - media_volume:/opt/services/djangoapp/media
     networks:
       - nginx_network
+      - db_network
+    depends_on:
+      - db
   nginx:
     container_name: berriesandgoods_nginx
     image: nginx:1.13
@@ -34,6 +37,8 @@ services:
   db:
     image: postgres:latest
     container_name: berriesandgoods_db
+    networks:
+      - db_network
     ports:
       - "5432:5432"
     restart: always
@@ -46,6 +51,8 @@ services:
 
 networks:
   nginx_network:
+    driver: bridge
+  db_network:
     driver: bridge
 
 volumes:
