@@ -1,14 +1,70 @@
 {% extends "index.html" %} 
+{% load static %}
 
 {% block styles%}
 #item-content {
   padding: 10px;
   width: 100%;
+  display: flex;
+}
+.item-details-card {
+  padding: 5px;
+  height: 80%;
+  justify-self: center;
+  align-self: center;
+  background: white;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.3);
+  transition: 0.3s;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 50% 1fr;
+  grid-template-areas: 
+    "item-image item-name"
+    "item-image item-price";
+}
+.item-details-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
+}
+.item-details-card h3 {
+  font-family: arial;
+  margin: 0;
+}
+.item-details-name {
+  grid-area: item-name;
+  justify-self: center;
+  align-self: end;
+}
+.item-details-price-tag {
+  grid-area: item-price-tag;
+}
+.item-details-price {
+  grid-area: item-price;
+  justify-self: center;
+  align-self: end;
+}
+.item-details-image {
+  grid-area: item-image;
+}
+.item-details-image img {
+  width: 100%;
 }
 {% endblock %}
 
 {% block content %}
-<div id="item-content">
-  <h1>{{item.name}}</h1>
+<div id="item-details-content">
+  <div class="item-details-card">
+    <div class="item-details-image">
+      {% if item.image %}
+        <img src="{% static item.image %}" />
+      {% else %}
+        <img src="{% static 'berriesandgoods/img/no-image-icon.jpg' %}" />
+      {% endif %}
+    </div>
+    <div class="item-details-name">
+      <h1>{{item.nameberry}}</h1>
+    </div>
+    <div class="item-details-price">PRICE UNKNOWN</div>
+  </div>
 </div>
 {% endblock %}
