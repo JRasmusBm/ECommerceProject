@@ -10,18 +10,17 @@
 .item-details-card {
   padding: 5px;
   height: 80%;
+  width: 80%;
+  margin: auto;
+  flex-direction: column;
   justify-self: center;
   align-self: center;
   background: white;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.3);
   transition: 0.3s;
   border-radius: 5px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 50% 1fr;
-  grid-template-areas: 
-    "item-image item-name"
-    "item-image item-price";
+  display: flex;
+  margin-top: 40px;
 }
 .item-details-card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
@@ -30,24 +29,53 @@
   font-family: arial;
   margin: 0;
 }
+.item-details {
+  padding: 20px;
+}
 .item-details-name {
-  grid-area: item-name;
   justify-self: center;
   align-self: end;
 }
 .item-details-price-tag {
-  grid-area: item-price-tag;
 }
 .item-details-price {
-  grid-area: item-price;
   justify-self: center;
   align-self: end;
 }
 .item-details-image {
-  grid-area: item-image;
+  width: 100%;
 }
 .item-details-image img {
   width: 100%;
+}
+@media only screen and (min-width: 900px) {
+  .item-details-card {
+    width: 70%;
+  }
+}
+@media only screen and (min-width: 1000px) {
+  .item-details-card {
+    width: 65%;
+  }
+}
+@media only screen and (min-width: 1100px) {
+  .item-details-card {
+    width: 60%;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .item-details-card {
+    width: 50%;
+  }
+}
+@media only screen and (min-width: 1400px) {
+  .item-details-card {
+    flex-direction: row;
+    width: 80%;
+  }
+  .item-details-image {
+    width: 50%;
+  }
 }
 {% endblock %}
 
@@ -61,10 +89,12 @@
         <img src="{% static 'berriesandgoods/img/no-image-icon.jpg' %}" />
       {% endif %}
     </div>
-    <div class="item-details-name">
-      <h1>{{item.nameberry}}</h1>
+    <div class="item-details">
+      <div class="item-details-name">
+        <h1>{{item.nameberry}}</h1>
+      </div>
+      <div class="item-details-price">PRICE UNKNOWN</div>
     </div>
-    <div class="item-details-price">PRICE UNKNOWN</div>
   </div>
 </div>
 {% endblock %}
