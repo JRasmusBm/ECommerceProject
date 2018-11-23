@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -22,13 +23,17 @@
         margin-top: 0;
         height: 100%;
         width: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
       }
       header {
-        width: 100%;
+        width: 80%;
         padding: 15px;
         font-size: 0.9em;
         border-bottom: 3px solid #acac86;
         display: flex;
+        justify-content: space-around;
         align-items: center;
       }
       header h1 {
@@ -42,13 +47,21 @@
         color: #1f1f14;
         font-size: 1.1em;
       }
-      @media only screen and (max-width: 600px) {
+      header img {
+        position: fixed;
+        right: 20px;
+        top: 20px;
+        width: 50px;
+      }
+      @media only screen and (max-width: 800px) {
           header {
               flex-direction: column;
               align-items: center;
+                min-height: 100px;
           }
           header h1 {
             margin-bottom: 10px;
+            margin-top: 10px;
           }
           header a {
             margin: 0;
@@ -60,10 +73,12 @@
   </head>
   <body>
     <header>
-      <h1>Berries and Goods</h1>
-      <a href="{% url 'home:index' %}">Home</a>
-      <a href="{% url 'items:index' %}">Browse Items</a>
+      <a href="{% url 'home:index' %}"><h1>Berries and Goods</h1></a>
+      <a href="{% url 'products:index' %}">Browse Products</a>
       <a href="{% url 'about:index' %}">About</a>
+      <a href="#">
+        <img src="{% static 'berriesandgoods/img/basket.png' %}" />
+      </a>
     </header>
 
     {% block content %} {% endblock %}

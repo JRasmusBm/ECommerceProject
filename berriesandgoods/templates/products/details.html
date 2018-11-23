@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block styles%}
-#item-content {
+#product-content {
   padding: 10px;
   width: 100%;
   display: flex;
 }
-.item-details-card {
+.product-details-card {
   padding: 5px;
   height: 80%;
   width: 80%;
@@ -22,78 +22,78 @@
   display: flex;
   margin-top: 40px;
 }
-.item-details-card:hover {
+.product-details-card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
 }
-.item-details-card h3 {
+.product-details-card h3 {
   font-family: arial;
   margin: 0;
 }
-.item-details {
+.product-details {
   padding: 20px;
 }
-.item-details-name {
+.product-details-name {
   justify-self: center;
   align-self: end;
 }
-.item-details-price-tag {
+.product-details-price-tag {
 }
-.item-details-price {
+.product-details-price {
   justify-self: center;
   align-self: end;
 }
-.item-details-image {
+.product-details-image {
   width: 100%;
 }
-.item-details-image img {
+.product-details-image img {
   width: 100%;
 }
 @media only screen and (min-width: 900px) {
-  .item-details-card {
+  .product-details-card {
     width: 70%;
   }
 }
 @media only screen and (min-width: 1000px) {
-  .item-details-card {
+  .product-details-card {
     width: 65%;
   }
 }
 @media only screen and (min-width: 1100px) {
-  .item-details-card {
+  .product-details-card {
     width: 60%;
   }
 }
 @media only screen and (min-width: 1200px) {
-  .item-details-card {
+  .product-details-card {
     width: 50%;
   }
 }
 @media only screen and (min-width: 1400px) {
-  .item-details-card {
+  .product-details-card {
     flex-direction: row;
     width: 80%;
   }
-  .item-details-image {
+  .product-details-image {
     width: 50%;
   }
 }
 {% endblock %}
 
 {% block content %}
-<div id="item-details-content">
-  <div class="item-details-card">
-    <div class="item-details-image">
-      {% if item.image %}
-        <img src="{% static item.image %}" />
+<div id="product-details-content">
+  <div class="product-details-card">
+    <div class="product-details-image">
+      {% if product.image %}
+        <img src="{% static product.image %}" />
       {% else %}
         <img src="{% static 'berriesandgoods/img/no-image-icon.jpg' %}" />
       {% endif %}
     </div>
-    <div class="item-details">
-      <div class="item-details-name">
-        <h1>{{item.nameberry}}</h1>
+    <div class="product-details">
+      <div class="product-details-name">
+        <h1>{{product.name}}</h1>
       </div>
-      <div class="item-details-price">PRICE UNKNOWN</div>
+      <div class="product-details-price">{{ product.price }} / {{ product.unit }}</div>
     </div>
   </div>
 </div>
