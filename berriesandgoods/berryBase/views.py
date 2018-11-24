@@ -31,9 +31,10 @@ def index(request):
 
 def details(request, product_id, message=""):
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            return redirect("login:login")
         form = AddToCartForm(request.POST)
         if form.is_valid():
-            message = "It worked!"
             return redirect("products:details", product_id=product_id)
     else:
         form = AddToCartForm()
