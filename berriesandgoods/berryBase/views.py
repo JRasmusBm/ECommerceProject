@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
 from home.models import Product
+from .forms import AddToCartForm
 
 
 def unpack_product(product):
@@ -27,7 +29,14 @@ def index(request):
     )
 
 
-def details(request, product_id):
+def details(request, product_id, message=""):
+    if request.method == "POST":
+        form = AddToCartForm(request.POST)
+        if form.is_valid():
+            message = "It worked!"
+            return redirect("products:details", product_id=product_id)
+    else:
+        form = AddToCartForm()
     context = {
         "page_title": "Details",
         "product": unpack_product(
@@ -35,6 +44,8 @@ def details(request, product_id):
                 f"SELECT * FROM product WHERE idproduct={product_id};"
             )[0]
         ),
+        "form": form,
+        "message": message,
     }
     return render(
         request=request,

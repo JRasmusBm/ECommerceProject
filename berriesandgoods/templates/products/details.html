@@ -32,6 +32,8 @@
 .product-details {
   padding: 20px;
   min-height: 23vh;
+  display: flex;
+  flex-direction: column;
 }
 .product-details-name {
   justify-self: center;
@@ -58,6 +60,39 @@
     width: 50%;
   }
 }
+.add-product-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+.add-product-form input[type="number"] {
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  margin-right: 2px;
+  font-size: 1.2em;
+  text-align: center;
+}
+.add-product-form label {
+  visibility: hidden;
+  position: fixed;
+}
+.add-button {
+  width: 100px;
+  height: 50px;
+  outline: none;
+  border: solid 2px #003d04;
+  background: #a0d6a0;
+  border-radius: 5px;
+  align-self: center;
+  justify-self: flex-end;
+  margin-left: 20px;
+}
+.add-button:hover {
+  cursor: pointer;
+}
 {% endblock %}
 
 {% block content %}
@@ -75,6 +110,12 @@
         <h1>{{product.name}}</h1>
       </div>
       <div class="product-details-price">{{ product.price }} / {{ product.unit }}</div>
+      <form class="add-product-form" method="post">
+        {{ form }} {{ product.unit }}
+        <input type="submit" class="add-button" value="Add to Cart"/>
+        {% csrf_token %}
+      </form>
+      {{ message }}
     </div>
   </div>
 </div>
