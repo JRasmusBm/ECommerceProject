@@ -6,7 +6,7 @@ form {
   flex-direction: column;
   align-items: center;
 }
-.login-button {
+.btn {
   width: 100px;
   height: 50px;
   outline: none;
@@ -17,17 +17,30 @@ form {
   justify-self: flex-end;
   margin-top: 10px;
 }
-.login-button:hover {
+.btn:hover {
   cursor: pointer;
+}
+a {
+  text-decoration: none;
+  letter-spacing: normal;
+  word-spacing: normal;
+  white-space: pre;
+  color: inherit;
+  display: flex;
+  font:400 13.3333px Arial;
+  color: inherit;
+  display: flex;
 }
 {% endblock %}
 
 {% block content %}
-
-  <form method="post">
-    <h2>Log in!</h2>
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" class="login-button" value="Log In"/>
-  </form>
+<form method="post">
+  <h2>Log in!</h2>
+  {{ message }}
+  {% csrf_token %} {{ form }}
+  <input type="submit" class="btn" value="Log In" />
+</form>
+<a class="btn" href="{% url 'login:create_user' %}">
+  Create a User
+</a>
 {% endblock %}

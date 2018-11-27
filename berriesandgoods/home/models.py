@@ -8,6 +8,7 @@
 # Feel free to rename the models, but don't rename db_table values or field
 # names.
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class Orderitems(models.Model):
@@ -79,12 +80,47 @@ class Producttype(models.Model):
         db_table = "producttype"
 
 
-class Users(models.Model):
-    idusers = models.IntegerField(primary_key=True)
-    admin = models.BooleanField()
-    email = models.CharField(max_length=45, blank=True, null=True)
-    password = models.CharField(max_length=45, blank=True, null=True)
+class MyUserManager(BaseUserManager):
+    def create_user(self, email, password):
+        if not email:
+            raise ValueError("Users must have an E-mail address")
+        if not password:
+            raise ValueError("Users must have a password")
+        user = self.model(email=self.normalize_email(email))
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password):
+        user = self.create_user(email, password=password)
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
+
+class Users(AbstractBaseUser):
+    idusers = models.AutoField("idusers", primary_key=True)
+    admin = models.BooleanField(default=True, null=True)
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+    email = models.EmailField(
+        verbose_name="email address", max_length=255, unique=True, null=True
+    )
+
+    objects = MyUserManager()
+
+    def __str__(self):
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
+    @property
+    def is_staff(self):
+        return self.admin
 
     class Meta:
-        managed = False
         db_table = "users"

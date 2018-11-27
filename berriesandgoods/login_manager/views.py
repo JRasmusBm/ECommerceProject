@@ -1,17 +1,42 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm
+from .forms import LoginForm, CreateUserForm
+from django.contrib.auth import authenticate, login
 
 
-def login(request):
+def login_screen(request, message=""):
     if request.method == "POST":
         form = LoginForm(request.POST)
-        if form.is_valid():
+        email = request.POST["email"]
+        password = request.POST["password"]
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
             return redirect("products:index")
+        else:
+            return redirect(
+                "login:login", message="Unsuccessful login!"
+            )
     else:
         form = LoginForm()
-    context = {"form": form}
+        context = {"form": form, "message": message}
     return render(
         request=request,
         template_name="login_manager/login.html",
+        context=context,
+    )
+
+
+def new_user(request):
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("login:login")
+    else:
+        form = CreateUserForm()
+    context = {"form": form}
+    return render(
+        request=request,
+        template_name="login_manager/create_user.html",
         context=context,
     )

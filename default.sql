@@ -49,7 +49,7 @@ CREATE TABLE "orders" (
 
 
 CREATE TABLE "users" (
-  "idusers" INTEGER NOT NULL,
+  "idusers" INTEGER,
   "admin" BOOL NOT NULL,
   "email" VARCHAR(255) NOT NULL,
   "password" VARCHAR(255) NOT NULL,

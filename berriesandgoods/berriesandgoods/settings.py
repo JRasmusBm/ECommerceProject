@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 ]
 
 AUTHENTICATION_BACKENDS = ["login_manager.backends.UserBackend"]
+AUTH_USER_MODEL = "home.Users"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
