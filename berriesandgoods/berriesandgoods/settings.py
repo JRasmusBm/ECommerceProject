@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     "home",
     "about",
     "login_manager",
-    "django.contrib.admin",
+    "berriesandgoods.apps.MyAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-AUTHENTICATION_BACKENDS = ["login_manager.backends.UserBackend"]
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "login_manager.backends.UserBackend",
+]
 AUTH_USER_MODEL = "home.Users"
 
 MIDDLEWARE = [

@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from home.models import Orderitems, Producttype, Product, Orders
+from .forms import Users, UserAdmin
+
+
+admin.site.register(Users, UserAdmin)
+admin.site.register(Orderitems)
+admin.site.register(Producttype)
+admin.site.register(Product)
+admin.site.register(Orders)
