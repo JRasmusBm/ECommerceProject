@@ -15,7 +15,7 @@ class Orderitems(models.Model):
     idorderitems = models.IntegerField(primary_key=True)
     amount = models.IntegerField()
     priceorderitems = models.IntegerField(
-        db_column="priceOrderItems"
+        db_column="priceorderitems"
     )  # Field name made lowercase.
     idorders = models.ForeignKey(
         "Orders", models.DO_NOTHING, db_column="idorders"

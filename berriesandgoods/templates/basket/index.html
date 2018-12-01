@@ -7,6 +7,15 @@
 {% endblock %}
 {% block content %}
 <div id="content">
-  
+  <h3>
+    Shopping Cart
+  </h3>
+  <div class="products">
+    {% for product in products %}
+      <div class="product">
+        <p><a href="#">{{ product.name }}</a>  |<!-- figure out unit and price -->   {{ product.price }}/{{ product.unit }}</p>
+      </div>
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}
