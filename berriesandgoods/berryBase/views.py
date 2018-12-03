@@ -21,6 +21,7 @@ def index(request):
             unpack_product(product)
             for product in Product.objects.raw("SELECT * FROM product")
         ],
+        "user": request.user,
     }
     return render(
         request=request,
@@ -47,6 +48,7 @@ def details(request, product_id, message=""):
         ),
         "form": form,
         "message": message,
+        "user": request.user,
     }
     return render(
         request=request,
