@@ -29,7 +29,6 @@ services:
       - djangoapp
   test:
     container_name: berriesandgoods_test
-    restart: always
     build: .
     command:
       bash -c "cd berriesandgoods/ ; coverage run -m pytest --ignore=data -vv --disable-warnings;

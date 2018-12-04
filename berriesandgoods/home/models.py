@@ -9,6 +9,7 @@
 # names.
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Orderitems(models.Model):
@@ -81,7 +82,7 @@ class Producttype(models.Model):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password):
+    def create_user(self, email, password, display_name=""):
         if not email:
             raise ValueError("Users must have an E-mail address")
         if not password:
@@ -91,20 +92,41 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email, password, display_name=""):
         user = self.create_user(email, password=password)
         user.is_admin = True
         user.save(using=self._db)
         return user
 
 
+class Review(models.Model):
+    idusers = models.ForeignKey(
+        "Users", models.DO_NOTHING, db_column="idusers", primary_key=True
+    )
+    idproduct = models.ForeignKey(
+        Product, models.DO_NOTHING, db_column="idproduct"
+    )
+    comment = models.CharField(max_length=8000, blank=True, null=True)
+    rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+
+    class Meta:
+        managed = False
+        db_table = "review"
+        unique_together = (("idusers", "idproduct"),)
+
+
 class Users(AbstractBaseUser):
     idusers = models.AutoField("idusers", primary_key=True)
     admin = models.BooleanField(default=True, null=True)
+    display_name = models.CharField(
+        max_length=255, default="", unique=True, null=True
+    )
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
     email = models.EmailField(
-        verbose_name="email address", max_length=255, unique=True, null=True
+        verbose_name="email address", max_length=255, unique=True
     )
 
     objects = MyUserManager()
