@@ -15,10 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from login_manager import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "login/",
+        include(("login_manager.urls", "login"), namespace="login"),
+    ),
+    path("logout/", views.log_out, name="logout"),
     path("", include(("home.urls", "home"), namespace="home")),
     path("about/", include(("about.urls", "about"), namespace="about")),
-    path("items/", include(("berryBase.urls", "items"), namespace="items")),
+    path(
+        "products/",
+        include(("berryBase.urls", "products"), namespace="products"),
+    ),
 ]

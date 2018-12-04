@@ -1,0 +1,46 @@
+{% extends "index.html" %}
+
+{% block styles%}
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.btn {
+  width: 100px;
+  height: 50px;
+  outline: none;
+  border: solid 2px #003d04;
+  background: #a0d6a0;
+  border-radius: 5px;
+  align-self: center;
+  justify-self: flex-end;
+  margin-top: 10px;
+}
+.btn:hover {
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+  letter-spacing: normal;
+  word-spacing: normal;
+  white-space: pre;
+  color: inherit;
+  display: flex;
+  font:400 13.3333px Arial;
+  color: inherit;
+  display: flex;
+}
+{% endblock %}
+
+{% block content %}
+<form method="post">
+  <h2>Log in!</h2>
+  {{ message }}
+  {% csrf_token %} {{ form }}
+  <input type="submit" class="btn" value="Log In" />
+</form>
+<a class="btn" href="{% url 'login:create_user' %}">
+  Create a User
+</a>
+{% endblock %}

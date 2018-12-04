@@ -32,13 +32,20 @@ INSTALLED_APPS = [
     "berryBase",
     "home",
     "about",
-    "django.contrib.admin",
+    "login_manager",
+    "berriesandgoods.apps.MyAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "login_manager.backends.UserBackend",
+]
+AUTH_USER_MODEL = "home.Users"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

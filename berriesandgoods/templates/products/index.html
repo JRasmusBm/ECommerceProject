@@ -2,23 +2,23 @@
 {% load static %}
 
 {% block styles%}
-#item-index-overview {
+#product-index-overview {
   display: grid;
-  margin: auto;
   margin-top: 10px;
   width: 80%;
   grid-template-columns: repeat(auto-fit, minmax(200px, 250px));
+  grid-auto-rows: min-content;
   grid-gap: 10px;
-  align-items: center;
+  grid-auto-flow: dense;
+  align-content: center;
   justify-content: center;
 }
-#item-index-overview a {
+#product-index-overview a {
   text-decoration: none;
   color: inherit;
 }
-.item-card {
+.product-card {
   padding: 5px;
-  min-height: 150px;
   background: white;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.3);
   transition: 0.3s;
@@ -27,54 +27,53 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 50% 1fr;
   grid-template-areas: 
-    "item-image item-image"
-    "item-name item-price";
+    "product-image product-image"
+    "product-name product-price";
 }
-.item-card:hover {
+.product-card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
 }
-.item-card h3 {
+.product-card h3 {
   font-family: arial;
   margin: 0;
 }
-.item-name {
-  grid-area: item-name;
+.product-name {
+  grid-area: product-name;
   justify-self: center;
   align-self: end;
 }
-.item-price-tag {
-  grid-area: item-price-tag;
+.product-price-tag {
+  grid-area: product-price-tag;
 }
-.item-price {
-  grid-area: item-price;
+.product-price {
+  grid-area: product-price;
   justify-self: center;
   align-self: end;
 }
-.item-image {
-  grid-area: item-image;
-  min-height:150px;
+.product-image {
+  grid-area: product-image;
 }
-.item-image img {
+.product-image img {
   width: 100%;
 }
 {% endblock %}
 
 {% block content %}
-<div id="item-index-overview">
-{% for item in items %}
-<a href="{% url "items:details" item.item_id %}">
-<div class="item-card">
-  <div class="item-image">
-    {% if item.image %}
-      <img src="{% static item.image %}" />
+<div id="product-index-overview">
+{% for product in products %}
+<a href="{% url "products:details" product.product_id %}">
+<div class="product-card">
+  <div class="product-image">
+    {% if product.image %}
+      <img src="{% static product.image %}" />
     {% else %}
       <img src="{% static 'berriesandgoods/img/no-image-icon.jpg' %}" />
     {% endif %}
   </div>
-  <div class="item-name">
-    <h3>{{item.name}}</h3>
+  <div class="product-name">
+    <h3>{{product.name}}</h3>
   </div>
-  <div class="item-price">{{item.price}} :- / {{item.unit}}</div>
+  <div class="product-price">{{product.price}} :- / {{product.unit}}</div>
 </div>
 </a>
 {% endfor %}
