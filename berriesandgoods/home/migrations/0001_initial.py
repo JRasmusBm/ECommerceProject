@@ -75,6 +75,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'users',
+                'managed': True,
             },
         ),
         migrations.CreateModel(

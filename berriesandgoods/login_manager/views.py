@@ -5,6 +5,8 @@ from django.contrib.auth import logout
 
 
 def login_screen(request, message=""):
+    if request.user.is_authenticated:
+        return redirect("home:index")
     if request.method == "POST":
         form = LoginForm(request.POST)
         email = request.POST["email"]
@@ -26,6 +28,8 @@ def login_screen(request, message=""):
 
 
 def new_user(request):
+    if request.user.is_authenticated:
+        return redirect("home:index")
     if request.method == "POST":
         form = CreateUserForm(request.POST)
         if form.is_valid():
