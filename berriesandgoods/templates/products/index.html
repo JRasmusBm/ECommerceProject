@@ -61,7 +61,7 @@
 {% block content %}
 <div id="product-index-overview">
 {% for product in products %}
-<a href="{% url "products:details" product.product_id %}">
+<a href="{% url "products:details" product.idproduct %}">
 <div class="product-card">
   <div class="product-image">
     {% if product.image %}

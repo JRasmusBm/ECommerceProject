@@ -19,10 +19,11 @@ class CreateUserForm(forms.ModelForm):
     password2 = forms.CharField(
         label="Password confirmation", widget=forms.PasswordInput
     )
+    display_name = forms.CharField(max_length=255, required=False)
 
     class Meta:
         model = Users
-        fields = ["email"]
+        fields = ["email", "display_name"]
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -41,10 +42,11 @@ class CreateUserForm(forms.ModelForm):
 
 class ChangeUserForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField()
+    display_name = forms.CharField(max_length=255, required=False)
 
     class Meta:
         model = Users
-        fields = ("email", "password", "admin")
+        fields = ("email", "password", "admin", "display_name")
 
     def clean_password(self):
         return self.initial["password"]
@@ -54,10 +56,10 @@ class UserAdmin(BaseUserAdmin):
     form = ChangeUserForm
     add_form = CreateUserForm
 
-    list_display = ("email", "admin")
+    list_display = ("email", "display_name", "admin")
     list_filter = ("admin",)
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
+        (None, {"fields": ("email", "display_name", "password")}),
         ("Permissions", {"fields": ("admin",)}),
     )
     add_fieldsets = (
@@ -65,7 +67,12 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("email", "password1", "password2"),
+                "fields": (
+                    "email",
+                    "display_name",
+                    "password1",
+                    "password2",
+                ),
             },
         ),
     )

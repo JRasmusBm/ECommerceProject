@@ -51,6 +51,7 @@ CREATE TABLE "orders" (
 CREATE TABLE "users" (
   "idusers" INTEGER,
   "admin" BOOL NOT NULL,
+  "display_name" VARCHAR(255);
   "email" VARCHAR(255) NOT NULL,
   "password" VARCHAR(255) NOT NULL,
   CONSTRAINT users_pk PRIMARY KEY ("idusers")
@@ -58,13 +59,24 @@ CREATE TABLE "users" (
   OIDS=FALSE
 );
 
-
+CREATE TABLE "review" (
+  "idusers" INT NOT NULL,
+  "idproduct" INT NOT NULL,
+  "comment" VARCHAR(8000),
+  "rating" INT NOT NULL,
+  PRIMARY KEY ("idusers","idproduct")
+);
 
 
 ALTER TABLE "orderitems" ADD CONSTRAINT "orderitems_fk0" FOREIGN KEY ("idorders") REFERENCES "orders"("idorders");
+
 ALTER TABLE "orderitems" ADD CONSTRAINT "orderitems_fk1" FOREIGN KEY ("idproduct") REFERENCES "product"("idproduct");
 
 ALTER TABLE "product" ADD CONSTRAINT "product_fk0" FOREIGN KEY ("nameproducttype") REFERENCES "producttype"("nameproducttype");
 
 ALTER TABLE "orders" ADD CONSTRAINT "orders_fk0" FOREIGN KEY ("idusers") REFERENCES "users"("idusers");
+
+ALTER TABLE "review" ADD CONSTRAINT "review_fk0" FOREIGN KEY ("idusers") REFERENCES "users"("idusers");
+
+ALTER TABLE "review" ADD CONSTRAINT "review_fk1" FOREIGN KEY ("idproduct") REFERENCES "product"("idproduct");
 
