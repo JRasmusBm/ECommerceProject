@@ -39,7 +39,7 @@ CREATE TABLE "orders" (
   OIDS=FALSE
 );
 
-CREATE TABLE "users" (
+CREATE TABLE IF NOT EXISTS "users" (
   "idusers" INTEGER,
   "admin" BOOL NOT NULL,
   "last_login" TIMESTAMP WITH TIME ZONE,
