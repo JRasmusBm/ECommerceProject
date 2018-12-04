@@ -119,7 +119,7 @@ class Review(models.Model):
 
 class Users(AbstractBaseUser):
     idusers = models.AutoField("idusers", primary_key=True)
-    admin = models.BooleanField(default=True, null=True)
+    admin = models.BooleanField(default=False, null=True)
     display_name = models.CharField(
         max_length=255, default="", unique=True, null=True
     )
