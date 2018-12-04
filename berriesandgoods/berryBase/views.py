@@ -49,6 +49,8 @@ def index(request):
 
 
 def edit_reviews(request, idproduct):
+    if not request.user.is_authenticated:
+        return redirect("login:login")
     if request.method == "POST":
         form = EditReviewForm(request.POST)
         if form.is_valid():

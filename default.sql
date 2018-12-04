@@ -1,4 +1,3 @@
-
 CREATE TABLE "producttype" (
   "nameproducttype" VARCHAR(255) NOT NULL UNIQUE,
   "unit" VARCHAR(255) NOT NULL,
@@ -6,8 +5,6 @@ CREATE TABLE "producttype" (
 ) WITH (
   OIDS=FALSE
 );
-
-
 
 CREATE TABLE "orderitems" (
   "idorderitems" INTEGER NOT NULL,
@@ -20,8 +17,6 @@ CREATE TABLE "orderitems" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "product" (
   "idproduct" INTEGER NOT NULL,
   "nameproduct" VARCHAR(255) NOT NULL,
@@ -32,8 +27,6 @@ CREATE TABLE "product" (
 ) WITH (
   OIDS=FALSE
 );
-
-
 
 CREATE TABLE "orders" (
   "idorders" INTEGER NOT NULL,
@@ -46,12 +39,11 @@ CREATE TABLE "orders" (
   OIDS=FALSE
 );
 
-
-
-CREATE TABLE "users" (
+CREATE TABLE IF NOT EXISTS "users" (
   "idusers" INTEGER,
   "admin" BOOL NOT NULL,
-  "display_name" VARCHAR(255);
+  "last_login" TIMESTAMP WITH TIME ZONE,
+  "display_name" VARCHAR(255),
   "email" VARCHAR(255) NOT NULL,
   "password" VARCHAR(255) NOT NULL,
   CONSTRAINT users_pk PRIMARY KEY ("idusers")
@@ -66,7 +58,6 @@ CREATE TABLE "review" (
   "rating" INT NOT NULL,
   PRIMARY KEY ("idusers","idproduct")
 );
-
 
 ALTER TABLE "orderitems" ADD CONSTRAINT "orderitems_fk0" FOREIGN KEY ("idorders") REFERENCES "orders"("idorders");
 
