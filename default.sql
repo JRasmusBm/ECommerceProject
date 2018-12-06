@@ -1,3 +1,5 @@
+CREATE EXTENSION pg_trgm;
+
 CREATE TABLE "producttype" (
   "nameproducttype" VARCHAR(255) NOT NULL UNIQUE,
   "unit" VARCHAR(255) NOT NULL,
