@@ -52,6 +52,7 @@ class Product(models.Model):
     idproduct = models.IntegerField(primary_key=True)
     nameproduct = models.CharField(max_length=45)
     priceproduct = models.IntegerField(blank=True, null=True)
+    availability = models.IntegerField()
     img = models.CharField(max_length=200, blank=True)
     nameproducttype = models.ForeignKey(
         "Producttype",
