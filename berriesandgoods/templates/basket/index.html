@@ -41,7 +41,7 @@ table, th, td {
     {% for product in products %}
       <div id="product">
           <tr>
-              <td><a href="/products/details/{{product.product_id}}">{{ product.name }}</a></td>
+              <td><a href="/products/details/{{product.idproduct}}">{{ product.name }}</a></td>
               <td>{{ product.amount }}{{ product.unit }}</td>
               <td>{{ product.price }}kr</td>
               <td>{{ product.orderprice }}kr</td>

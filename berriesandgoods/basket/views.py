@@ -1,28 +1,31 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.middleware import AuthenticationMiddleware
 
 from .orders import OrdersBackend
 from .forms import ChangeAmount
 from login_manager.views import login_screen
 from home.models import Orders
-    
 
-def removeProduct(request, product_id):
+
+def removeProduct(request, idproduct):
     if not request.user.is_authenticated:
         return redirect("login:login")
     ordersBackend = OrdersBackend()
-    ordersBackend.removeProduct(productId= product_id)
-    return redirect('basket:index')
+    ordersBackend.removeProduct(idproduct=idproduct)
+    return redirect("basket:index")
 
-def changeAmount(request, product_id):
+
+def changeAmount(request, idproduct):
     if request.method == "POST":
         if not request.user.is_authenticated:
             return redirect("login:login")
         formChange = ChangeAmount(request.POST)
         if formChange.is_valid():
             ordersBackend = OrdersBackend()
-            ordersBackend.changeAmount(productId=product_id, amount=int(formChange.data["amount"]))
+            ordersBackend.changeAmount(
+                idproduct=idproduct, amount=int(formChange.data["amount"])
+            )
     return redirect("basket:index")
+
 
 def checkout(request):
     if not request.user.is_authenticated:
@@ -32,17 +35,21 @@ def checkout(request):
     ordersBackend.pay(user.idusers)
     return redirect("basket:index")
 
+
 def unpack_product(product, orderItem):
     return {
         "name": product.nameproduct,
         "price": format(product.priceproduct / 100, ".2f"),
         "unit": product.nameproducttype.unit,
-        "product_id": product.idproduct,
+        "idproduct": product.idproduct,
         "image": product.img,
         "amount": format(orderItem.amount),
-        "orderprice": format((orderItem.priceorderitems * orderItem.amount) / 100, ".2f"),
+        "orderprice": format(
+            (orderItem.priceorderitems * orderItem.amount) / 100, ".2f"
+        ),
         "orderitem_id": orderItem.idorderitems,
     }
+
 
 def index(request):
     ordersBackend = OrdersBackend()
@@ -62,16 +69,16 @@ def index(request):
         get[0].sort(key=lambda x: x.idproduct)
         get[1].sort(key=lambda x: x.idproduct.idproduct)
     else:
-        get=[[],[]]
+        get = [[], []]
     get = [
         unpack_product(product, orderItem)
         for product, orderItem in zip(get[0], get[1])
     ]
     context = {
-        "page_title" : "Basket",
-        "products" : get,
-        "priceorder" : format(price / 100, ".2f"),
-        "formChange" : formChange,
+        "page_title": "Basket",
+        "products": get,
+        "priceorder": format(price / 100, ".2f"),
+        "formChange": formChange,
     }
     return render(
         request=request, template_name="basket/index.html", context=context
