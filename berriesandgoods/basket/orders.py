@@ -4,7 +4,7 @@ from home.models import Users, Orders, Orderitems, Product
 class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
     
     def getOrders(self, user):  # return list of users orders
-        userOrders = Orders.objects.filter(idusers=user.idusers)
+        userOrders = Orders.objects.filter(idusers=user.idusers, price__gt=0) #wont return empty order
         orders = []
         for order in userOrders:
             orders.append(order)
