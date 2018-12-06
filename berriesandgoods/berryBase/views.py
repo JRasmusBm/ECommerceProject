@@ -3,6 +3,7 @@ from django.db import connection
 
 from home.models import Product, Review, Users
 from .forms import AddToCartForm, EditReviewForm, SearchForm
+from basket.orders import OrdersBackend
 
 
 def unpack_product(product):
@@ -157,6 +158,12 @@ def details(request, idproduct, message=""):
             return redirect("login:login")
         form = AddToCartForm(request.POST)
         if form.is_valid():
+            ordersBackend = OrdersBackend()
+            ordersBackend.addProduct(
+                username=request.user.email,
+                idproduct=idproduct,
+                amount=int(form.data["amount"]),
+            )
             return redirect("products:details", idproduct=idproduct)
     else:
         form = AddToCartForm()
