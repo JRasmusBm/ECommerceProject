@@ -1,0 +1,66 @@
+{% extends "index.html" %}
+
+{% block styles%}
+#content {
+  padding: 10px;
+}
+#products {
+  overflow: hidden;
+  float: left;
+  text-align: center;
+}
+#form {
+  float: right;
+  margin-left: 5px;
+}
+#inpf {
+  width: 90px
+}
+#inpi {
+  width: 70px
+}
+table, th, td {
+  border: 1px solid black;
+  padding: 2px;
+}
+{% endblock %}
+{% block content %}
+<div id="content">
+  <h3>
+    Orders - Admin View
+  </h3>
+  <div id="orders">
+      <table style="width:100%">
+          <tr>
+            <th>ID</th>
+            <th>E-mail</th>
+            <th>Price</th>
+            <th>Payment</th>
+            <th>Status</th>
+          </tr>
+    {% for order in orders %}
+      <div id="order">
+          <tr>
+            <td><a href="/view_orders/details/{{order.id}}">{{ order.id }}</a></td>
+            <td>{{ order.email }}</td>
+            <td>{{ order.price }}kr</td>
+            <td>{{ order.payment }}</td>
+            <td>{{ order.status }}</td>
+            <td>
+              <form action="/view_orders/admin/remove/{{ order.id }}" method="get">
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <input type="submit" value="Remove" name="Submit" {% if order.statusBool %} disabled {% endif %}/>
+              </form>
+            </td>
+            <td>
+              <form action="/view_orders/admin/handle/{{ order.id }}" method="get">
+                <input type="submit" value="Handle" name="Submit" {% if not order.paymentBool %} disabled {% endif %}/>
+              </form>
+            </td>
+          </tr>
+      </div>
+    {% endfor %}
+  </table>
+  </div>
+</div>
+{% endblock %}

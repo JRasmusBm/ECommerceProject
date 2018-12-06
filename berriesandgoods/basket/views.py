@@ -52,18 +52,13 @@ def unpack_product(product, orderItem):
 
 
 def index(request):
+    if not request.user.is_authenticated:
+        return redirect("login:login")
     ordersBackend = OrdersBackend()
     user = request.user
-    order = Orders.objects.filter(idusers=user.idusers)
-    order = order.filter(payment=False)
-    if order.exists():
-        order = order.get()
-        price = order.price
+    order = ordersBackend.getOrCreateOrder(user)
+    price = order.price
     formChange = ChangeAmount(auto_id=False)
-    if not request.user.is_authenticated:
-        login_screen
-        user = request.user
-    order = ordersBackend.getOrder(user.email)
     get = ordersBackend.getProducts(order.idorders)
     if len(get) > 1:
         get[0].sort(key=lambda x: x.idproduct)
