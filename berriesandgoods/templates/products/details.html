@@ -44,6 +44,9 @@
 .product-details-price {
   justify-self: center;
   align-self: end;
+  font-size: 1.2em;
+  padding: 3px;
+  font-weight: 600;
 }
 .product-details-image {
   width: 100%;
@@ -120,7 +123,7 @@
       <div class="product-details-name">
         <h1>{{product.name}}</h1>
       </div>
-      <div class="product-details-price">{{ product.price }} / {{ product.unit }}</div>
+      <div class="product-details-price">{{ product.price }} :- / {{ product.unit }}</div>
       {% if product.availability == 0 %}
         Product sold out!
       {% elif product.availability < 20 %}
