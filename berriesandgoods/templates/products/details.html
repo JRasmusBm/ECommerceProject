@@ -121,6 +121,15 @@
         <h1>{{product.name}}</h1>
       </div>
       <div class="product-details-price">{{ product.price }} / {{ product.unit }}</div>
+      {% if product.availability == 0 %}
+        Product sold out!
+      {% elif product.availability < 20 %}
+        Buy now! Only {{ product.availability }} {{product.unit}} left!
+      {% else %}
+        {{ product.availability }} {{product.unit}} in stock.
+      {% endif %}
+        
+        
       <form class="add-product-form" method="post">
         {{ form }} {{ product.unit }}
         <input type="submit" class="add-button" value="Add to Cart"/>

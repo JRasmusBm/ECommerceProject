@@ -9,6 +9,7 @@ from basket.orders import OrdersBackend
 def unpack_product(product):
     return {
         "name": product.nameproduct,
+        "availability": product.availability,
         "price": format(product.priceproduct / 100, ".2f"),
         "unit": product.nameproducttype.unit,
         "idproduct": product.idproduct,
