@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 
 from home.models import Product
 from .forms import AddToCartForm
+from basket.orders import OrdersBackend
 
 
 def unpack_product(product):
@@ -35,6 +36,8 @@ def details(request, product_id, message=""):
             return redirect("login:login")
         form = AddToCartForm(request.POST)
         if form.is_valid():
+            ordersBackend = OrdersBackend()
+            ordersBackend.addProduct(username=request.user.email, productId=product_id, amount=int(form.data["amount"]))
             return redirect("products:details", product_id=product_id)
     else:
         form = AddToCartForm()

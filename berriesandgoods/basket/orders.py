@@ -1,7 +1,4 @@
-from home.models import Users
-from home.models import Orders
-from home.models import Orderitems
-from home.models import Product
+from home.models import Users, Orders, Orderitems, Product
 
 class OrdersBackend: #TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
 
@@ -15,14 +12,19 @@ class OrdersBackend: #TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
         return userOrder
 
     def getProducts (self, orderId): #returns the products of an order
-        #try:
         i = Orderitems.objects.filter(idorders=orderId)
+        o = []
         p = []
-        for product in i:
-            p.append(product.idproduct)
-        return [i, p]
-        #except:
-        #   return []
+        try:
+            for product in i:
+                p.append(product.idproduct)
+                o.append(product)
+            return [p, o]
+        except:
+           return [p, o]
+
+    def getPrice (self, orderId):
+        pass
 
     def createOrder (self, user): #connect new order to user
         n = Orders.objects.all().count()
@@ -37,46 +39,61 @@ class OrdersBackend: #TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
         product = Product.objects.get(idproduct=productId)
         userOrder = Orders.objects.filter(idusers=user.idusers)
         userOrder = userOrder.filter(payment=False)
-        if not userOrder.exists():
+        if userOrder.exists():
+            userOrder = userOrder.get()
+        else:
             userOrder = self.createOrder(user.idusers)
         userItems = Orderitems.objects.filter(idproduct=productId)
-        userItem = userItems.filter(idusers=user.idusers)
+        userItem = userItems.filter(idorders=userOrder.idorders)
         if userItem.exists():
-            userItem.amount = userItem.amount + 1
+            userItem = userItem.get()
+            userItem.amount = userItem.amount + amount
             userItem.save()
         else:
-            userItem = Orderitems(amount=amount, idproduct=productId, idorders=userOrder.idorders, priceorderitems=product.priceproduct)
+            n = Orderitems.objects.all().count()
+            if n != 0:
+                n = Orders.objects.all()[n-1].idorders + 1
+            userItem = Orderitems(idorderitems=n, amount=amount, idproduct=Product.objects.get(idproduct=productId), idorders=userOrder, priceorderitems=product.priceproduct)
             userItem.save()
         userOrder.price = userOrder.price + (product.priceproduct * amount)
         userOrder.save()
 
 
-    def removeProduct (self, orderId, productId): #remove product from order
-        order = Orders.objects.filter(idOrders=orderId)
-        orderProducts = Orderitems.objects.filter(idorders=orderId)
-        orderProducts = orderProducts.filter(idproduct=productId) #querryset with item (if exists)
-        if orderProducts.exists():
-            orderProduct = orderProducts.get(idproduct=productId) #object instead of querryset
-            order.price = order.price - orderProduct.priceorderitems #lower price of order with the amount of the product
+    def removeProduct (self, productId): #remove product from order
+        product = Orderitems.objects.filter(idorderitems=productId)
+        if product.exists():
+            product = product.get()
+            order = Orders.objects.get(idorders= product.idorders.idorders)
+            order.price = order.price - (product.priceorderitems * product.amount) #lower price of order with the amount of the product
             order.save()
-            orderProducts.delete() #delete product
+            product.delete() #delete product
         else:
             pass
 
-    def pay (self, orderId): #set order to payed
-        order = Orders.objects.get(idOrders=orderId)
-        order.payment = True
-        order.save()
+    def pay (self, userId): #set order to payed
+        order = Orders.objects.filter(idusers=userId)
+        if order.exists():
+            order = order.get()
+            if Orderitems.objects.filter(idorders=order.idorders).exists:
+                order.payment = True
+                order.save()
         
     def handle (self, orderId): #set order to handeled
         order = Orders.objects.get(idOrders=orderId)
         order.status = True
         order.save()
 
-    def changeAmount (self, idOrders, product, amount): #change amount of a product TODO
-        #lookup order from idOrders
-        #
-        #change the order price
+    def changeAmount (self, productId, amount): #change amount of a product
+        product = Orderitems.objects.filter(idorderitems=productId)
+        if product.exists():
+            product = product.get()
+            order = Orders.objects.get(idorders= product.idorders.idorders)
+            order.price = order.price - (product.priceorderitems * product.amount) #remove price of orderitem amount
+            product.amount = amount
+            product.priceorderitems = Product.objects.get(idproduct= product.idproduct.idproduct).priceproduct #update orderitem price
+            order.price = order.price + (product.priceorderitems * amount) #add new price of orderitem amount
+            order.save()
+            product.save()
         pass
 
     def delOrder (self, parameter_list): #Delete order TODO
