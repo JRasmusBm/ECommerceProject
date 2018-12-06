@@ -2,11 +2,7 @@ from django.shortcuts import render, redirect
 from django.db import connection
 
 from home.models import Product, Review, Users
-from .forms import AddToCartForm, EditReviewForm
-import logging
-
-
-logger = logging.getLogger("DEBUG")
+from .forms import AddToCartForm, EditReviewForm, SearchForm
 
 
 def unpack_product(product):
@@ -33,11 +29,45 @@ def unpack_review(review):
 
 
 def index(request):
+    if request.method == "POST":
+        search_form = SearchForm(request.POST)
+        if search_form.is_valid():
+            return redirect("products:search", term=request.POST["search"])
+    search_form = SearchForm()
     context = {
+        "search_form": search_form,
         "page_title": "Berries",
         "products": [
             unpack_product(product)
             for product in Product.objects.raw("SELECT * FROM product")
+        ],
+        "user": request.user,
+    }
+    return render(
+        request=request,
+        template_name="products/index.html",
+        context=context,
+    )
+
+
+def search(request, term):
+    if request.method == "POST":
+        search_form = SearchForm(request.POST)
+        if search_form.is_valid():
+            return redirect("products:search", term=request.POST["search"])
+    search_form = SearchForm()
+    context = {
+        "page_title": "Berries",
+        "search_form": search_form,
+        "products": [
+            unpack_product(product)
+            for product in Product.objects.raw(
+                """SELECT * FROM product
+                WHERE ((nameproduct <-> %s) < 0.8
+                   OR (nameproducttype <-> %s) < 0.8)
+                   ORDER BY (nameproduct <-> %s);""",
+                3 * [term],
+            )
         ],
         "user": request.user,
     }

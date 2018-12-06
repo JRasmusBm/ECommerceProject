@@ -56,9 +56,18 @@
 .product-image img {
   width: 100%;
 }
+.search_form {
+  display: flex;
+  width: 80%;
+  margin: 20px 0;
+  justify-content: flex-end;
+}
 {% endblock %}
 
 {% block content %}
+<form class="search_form" method="post">
+  {% csrf_token %} {{ search_form }}
+</form>
 <div id="product-index-overview">
 {% for product in products %}
 <a href="{% url "products:details" product.idproduct %}">
