@@ -1,0 +1,76 @@
+{% extends "index.html" %}
+
+{% block styles%}
+#content {
+  padding: 10px;
+}
+#products {
+  overflow: hidden;
+  float: left;
+  text-align: center;
+}
+#form {
+  float: right;
+  margin-left: 5px;
+}
+#inpf {
+  width: 90px
+}
+#inpi {
+  width: 70px
+}
+table, th, td {
+  border: 1px solid black;
+  padding: 2px;
+}
+{% endblock %}
+{% block content %}
+<div id="content">
+  <h3>
+    Shopping Cart
+  </h3>
+  <div id="products">
+      <table style="width:100%">
+          <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Price</th>
+            <th>Total Price</th>
+            <th >Change Amount</th>
+          </tr>
+    {% for product in products %}
+      <div id="product">
+          <tr>
+              <td><a href="/products/details/{{product.idproduct}}">{{ product.name }}</a></td>
+              <td>{{ product.amount }}{{ product.unit }}</td>
+              <td>{{ product.price }}kr</td>
+              <td>{{ product.orderprice }}kr</td>
+              <td>
+                <form action="change/{{ product.orderitem_id }}" method="POST">
+                    {{ formChange.as_p }}
+                    {% csrf_token %}
+                </form>
+              </td>
+              <td>
+                <form action="remove/{{ product.orderitem_id }}" method="get">
+                  <input type="submit" value="Remove" name="Submit"/>
+              </form>
+              </td>
+            </tr>
+      </div>
+    {% endfor %}
+  </table>
+  </div>
+  <div>
+    <div style="text-align: left; float: left;">
+      <h3>Total</h3>
+      <h4>{{ priceorder }}</h4>
+    </div>
+    <div style="text-align: right; float: right; height: 100px">
+      <form action="checkout/" method="get">
+        <input style="margin-top: 50px" type="submit" value="Checkout" name="Submit"/>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
