@@ -1,0 +1,90 @@
+{% extends "index.html" %} 
+{% load static %}
+
+{% block styles%}
+#product-index-overview {
+  display: grid;
+  margin-top: 10px;
+  width: 80%;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 250px));
+  grid-auto-rows: min-content;
+  grid-gap: 10px;
+  grid-auto-flow: dense;
+  align-content: center;
+  justify-content: center;
+}
+#product-index-overview a {
+  text-decoration: none;
+  color: inherit;
+}
+.product-card {
+  padding: 5px;
+  background: white;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.3);
+  transition: 0.3s;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 50% 1fr;
+  grid-template-areas: 
+    "product-image product-image"
+    "product-name product-price";
+}
+.product-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
+}
+.product-card h3 {
+  font-family: arial;
+  margin: 0;
+}
+.product-name {
+  grid-area: product-name;
+  justify-self: center;
+  align-self: end;
+}
+.product-price-tag {
+  grid-area: product-price-tag;
+}
+.product-price {
+  grid-area: product-price;
+  justify-self: center;
+  align-self: end;
+}
+.product-image {
+  grid-area: product-image;
+}
+.product-image img {
+  width: 100%;
+}
+.search_form {
+  display: flex;
+  width: 80%;
+  margin: 20px 0;
+  justify-content: flex-end;
+}
+{% endblock %}
+
+{% block content %}
+<form class="search_form" method="post">
+  {% csrf_token %} {{ search_form }}
+</form>
+<div id="product-index-overview">
+{% for product in products %}
+<a href="{% url "products:details" product.idproduct %}">
+<div class="product-card">
+  <div class="product-image">
+    {% if product.image %}
+      <img src="{% static product.image %}" />
+    {% else %}
+      <img src="{% static 'berriesandgoods/img/no-image-icon.jpg' %}" />
+    {% endif %}
+  </div>
+  <div class="product-name">
+    <h3>{{product.name}}</h3>
+  </div>
+  <div class="product-price">{{product.price}} :- / {{product.unit}}</div>
+</div>
+</a>
+{% endfor %}
+</div>
+{% endblock %}

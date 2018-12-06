@@ -1,0 +1,140 @@
+{% extends "index.html" %} 
+{% load static %}
+
+{% block styles %}
+#product-content {
+  padding: 10px;
+  width: 100%;
+  display: flex;
+}
+.product-details-card {
+  padding: 10px;
+  height: 80%;
+  width: 45vw;
+  margin: auto;
+  flex-direction: column;
+  justify-self: center;
+  align-self: center;
+  background: white;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.3);
+  transition: 0.3s;
+  border-radius: 5px;
+  display: flex;
+  margin-top: 40px;
+}
+.product-details-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
+}
+.product-details-card h3 {
+  font-family: arial;
+  margin: 0;
+}
+.product-details {
+  padding: 20px;
+  min-height: 23vh;
+  display: flex;
+  flex-direction: column;
+}
+.product-details-name {
+  justify-self: center;
+  align-self: end;
+}
+.product-details-price-tag {
+}
+.product-details-price {
+  justify-self: center;
+  align-self: end;
+}
+.product-details-image {
+  width: 100%;
+}
+.product-details-image img {
+  width: 100%;
+}
+@media only screen and (min-width: 880px) {
+  .product-details-card {
+    flex-direction: row;
+    width: 80vw;
+  }
+  .product-details-image {
+    width: 50%;
+  }
+}
+.add-product-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+.add-product-form input[type="number"] {
+  width: 100px;
+  height: 40px;
+  border-radius: 5px;
+  margin-right: 2px;
+  font-size: 1.2em;
+  text-align: center;
+}
+.add-product-form label {
+  visibility: hidden;
+  position: fixed;
+}
+.add-button {
+  width: 100px;
+  height: 50px;
+  outline: none;
+  border: solid 2px #003d04;
+  background: #a0d6a0;
+  border-radius: 5px;
+  align-self: center;
+  justify-self: flex-end;
+  margin-left: 20px;
+}
+.add-button:hover {
+  cursor: pointer;
+}
+.review_link {
+  text-decoration: none;
+  display: block;
+  color: inherit;
+  margin-top: 20px;
+  width: 30vw;
+  text-align: center;
+}
+.review_link span {
+  margin-right: 10px;
+}
+{% endblock %}
+
+{% block content %}
+<div id="product-details-content">
+  <div class="product-details-card">
+    <div class="product-details-image">
+      {% if product.image %}
+        <img src="{% static product.image %}" />
+      {% else %}
+        <img src="{% static 'berriesandgoods/img/no-image-icon.jpg' %}" />
+      {% endif %}
+    </div>
+    <div class="product-details">
+      <div class="product-details-name">
+        <h1>{{product.name}}</h1>
+      </div>
+      <div class="product-details-price">{{ product.price }} / {{ product.unit }}</div>
+      <form class="add-product-form" method="post">
+        {{ form }} {{ product.unit }}
+        <input type="submit" class="add-button" value="Add to Cart"/>
+        {% csrf_token %}
+      </form>
+      {{ message }}
+
+      <a class="review_link" 
+        href="{% url "products:reviews" product.idproduct %}"
+      >
+      <span>{{reviewScore}} / 5</span>
+      ({{ reviewAmount }} reviews)
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

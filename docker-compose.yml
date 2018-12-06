@@ -1,0 +1,59 @@
+version: "2"
+services:
+  djangoapp:
+    container_name: berriesandgoods
+    restart: always
+    build: .
+    command: ./start.sh
+    volumes:
+      - .:/opt/services/djangoapp/src
+      - static_volume:/opt/services/djangoapp/static
+      - media_volume:/opt/services/djangoapp/media
+    networks:
+      - nginx_network
+      - db_network
+    depends_on:
+      - db
+  nginx:
+    container_name: berriesandgoods_nginx
+    image: nginx:1.13
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - static_volume:/opt/services/djangoapp/static
+      - media_volume:/opt/services/djangoapp/media
+    networks:
+      - nginx_network
+    depends_on:
+      - djangoapp
+  test:
+    container_name: berriesandgoods_test
+    build: .
+    command:
+      bash -c "cd berriesandgoods/ ; coverage run -m pytest --ignore=data -vv --disable-warnings;
+      coverage report -m; coverage html"
+  db:
+    image: postgres:latest
+    container_name: berriesandgoods_db
+    networks:
+      - db_network
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: berries
+      POSTGRES_PASSWORD: berries
+      POSTGRES_DB: berry_db
+    volumes:
+      - ./berriesandgoods/postgres-data:/var/lib/postgresql/data
+
+networks:
+  nginx_network:
+    driver: bridge
+  db_network:
+    driver: bridge
+
+volumes:
+  static_volume:
+  media_volume:
