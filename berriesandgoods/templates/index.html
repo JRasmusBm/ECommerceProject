@@ -77,6 +77,7 @@
       <a href="{% url 'about:index' %}">About</a> 
       {% if user.is_authenticated %} 
       <a href="{% url 'logout' %}">Log out</a> 
+      <a href="{% url 'view_orders:index' %}">View Orders</a>
       {% else %}
       <a href="{% url 'login:login' %}">Log In</a> 
       {% endif %}

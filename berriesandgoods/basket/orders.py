@@ -2,16 +2,10 @@ from home.models import Users, Orders, Orderitems, Product
 
 
 class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
-
-    def getOrder(self, email):  # return current active order
-        user = Users.objects.get(email=email)
-        userOrder = Orders.objects.filter(idusers=user.idusers)
-        userOrder = userOrder.filter(payment=False)
-        if not userOrder.exists():
-            userOrder = self.createOrder(user)
-        else:
-            userOrder = userOrder.get()
-        return userOrder
+    def getOrders(self, user):  # return list of users orders
+        return list(
+            Orders.objects.filter(idusers=user.idusers, price__gt=0)
+        )
 
     def getProducts(self, orderId):  # returns the products of an order
         i = Orderitems.objects.filter(idorders=orderId)
@@ -24,9 +18,6 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
             return [p, o]
         return [p, o]
 
-    def getPrice(self, orderId):
-        pass
-
     def createOrder(self, user):  # connect new order to user
         n = Orders.objects.all().count()
         if n != 0:
@@ -37,17 +28,19 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
         o.save()
         return o
 
+    def getOrCreateOrder(self, user):
+        if not Orders.objects.filter(
+            idusers=user.idusers, payment=False
+        ).exists():
+            return self.createOrder(user)
+        return Orders.objects.get(idusers=user.idusers, payment=False)
+
     def addProduct(
         self, username, idproduct, amount
     ):  # add product to order
         user = Users.objects.get(email=username)
         product = Product.objects.get(idproduct=idproduct)
-        userOrder = Orders.objects.filter(idusers=user.idusers)
-        userOrder = userOrder.filter(payment=False)
-        if userOrder.exists():
-            userOrder = userOrder.get()
-        else:
-            userOrder = self.createOrder(user.idusers)
+        userOrder = self.getOrCreateOrder(user)
         userItems = Orderitems.objects.filter(idproduct=idproduct)
         userItem = userItems.filter(idorders=userOrder.idorders)
         if userItem.exists():
@@ -79,20 +72,18 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
             )  # lower price of order with the amount of the product
             order.save()
             product.delete()  # delete product
-        else:
-            pass
 
-    def pay(self, userId):  # set order to payed
-        order = Orders.objects.filter(idusers=userId)
+    def pay(self, userId):  # set order to paid
+        order = Orders.objects.filter(idusers=userId, payment=False)
         if order.exists():
             order = order.get()
-            if Orderitems.objects.filter(idorders=order.idorders).exists:
+            if Orderitems.objects.filter(idorders=order.idorders).exists():
                 order.payment = True
                 order.save()
 
     def handle(self, orderId):  # set order to handeled
-        order = Orders.objects.get(idOrders=orderId)
-        order.status = True
+        order = Orders.objects.get(idorders=orderId)
+        order.status = not order.status
         order.save()
 
     def changeAmount(self, idproduct, amount):  # change amount of a product
@@ -112,8 +103,34 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
             )  # add new price of orderitem amount
             order.save()
             product.save()
-        pass
 
-    def delOrder(self, parameter_list):  # Delete order TODO
-        # if handeled, dont delete
-        pass
+    def removeOrder(self, idorders):  # Delete order
+        order = Orders.objects.filter(idorders=idorders)
+        if order.exists() and order.count() == 1:
+            order = order.get()
+            Orderitems.objects.filter(idorders=idorders).delete()
+            order.delete()
+
+    def getHandeled(self, idorders):
+        order = Orders.objects.filter(idorders=idorders)
+        if order.exists() and order.count() == 1:
+            order = order.get()
+            if order.status is True:
+                return "Handeled"
+            else:
+                return "Not Handeled"
+
+    def getPaid(self, idorders):
+        order = Orders.objects.filter(idorders=idorders)
+        if order.exists() and order.count() == 1:
+            order = order.get()
+            if order.payment is True:
+                return "Paid"
+            else:
+                return "Not Paid"
+
+    def getEmail(self, order):
+        user = order.user
+        if user.exists() and user.count() == 1:
+            user = user.get()
+            return user.email
