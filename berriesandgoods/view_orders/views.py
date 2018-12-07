@@ -5,15 +5,18 @@ from login_manager.views import login_screen
 from home.models import Orders
 
 
-
 def removeOrder(request, idorders):
     if not request.user.is_authenticated:
-            return redirect("/")
-    if not Orders.objects.filter(idorders=idorders).exists() or Orders.objects.get(idorders=idorders).idusers != request.user:
-            return redirect("/")
+        return redirect("/")
+    if (
+        not Orders.objects.filter(idorders=idorders).exists()
+        or Orders.objects.get(idorders=idorders).idusers != request.user
+    ):
+        return redirect("/")
     ordersBackend = OrdersBackend()
     ordersBackend.removeOrder(idorders=idorders)
     return redirect("view_orders:index")
+
 
 def removeOrderAdmin(request, idorders):
     if not request.user.admin:
@@ -21,7 +24,8 @@ def removeOrderAdmin(request, idorders):
     ordersBackend = OrdersBackend()
     ordersBackend.removeOrder(idorders=idorders)
     return redirect("view_orders:admin")
-    
+
+
 def handleOrder(request, idorders):
     if not request.user.is_authenticated or not request.user.admin:
         return redirect("/")
@@ -29,17 +33,19 @@ def handleOrder(request, idorders):
     ordersBackend.handle(idorders)
     return redirect("view_orders:admin")
 
+
 def unpack_order(order, user):
     ordersBackend = OrdersBackend()
     return {
         "id": format(order.idorders),
-        "email" : order.idusers.email,
+        "email": order.idusers.email,
         "price": format(order.price / 100, ".2f"),
         "payment": ordersBackend.getPaid(order.idorders),
-        "paymentBool" : order.payment,
+        "paymentBool": order.payment,
         "status": ordersBackend.getHandeled(order.idorders),
         "statusBool": order.status,
     }
+
 
 def unpack_product(product, orderItem):
     return {
@@ -55,9 +61,13 @@ def unpack_product(product, orderItem):
         "orderitem_id": orderItem.idorderitems,
     }
 
+
 def orderDetail(request, idorders):
     if not request.user.is_authenticated or not request.user.admin:
-        if not Orders.objects.filter(idorders=idorders).exists() or Orders.objects.get(idorders=idorders).idusers != request.user:
+        if (
+            not Orders.objects.filter(idorders=idorders).exists()
+            or Orders.objects.get(idorders=idorders).idusers != request.user
+        ):
             return redirect("/")
     ordersBackend = OrdersBackend()
     order = Orders.objects.get(idorders=idorders)
@@ -68,12 +78,15 @@ def orderDetail(request, idorders):
     ]
     context = {
         "page_title": "Details Order " + str(order.idorders),
-        "order" : unpack_order(order, request.user),
+        "order": unpack_order(order, request.user),
         "products": orderItems,
-    }    
+    }
     return render(
-        request=request, template_name="view_orders/detail.html", context=context
+        request=request,
+        template_name="view_orders/detail.html",
+        context=context,
     )
+
 
 def admin(request):
     if not request.user.is_authenticated or not request.user.admin:
@@ -85,16 +98,14 @@ def admin(request):
         allOrders.append(order)
     context = {
         "page_title": "View Orders",
-        "orders": [
-            unpack_order(order, user)
-            for order in orders
-        ],
+        "orders": [unpack_order(order, user) for order in orders],
     }
     return render(
-        request=request, template_name="view_orders/admin.html", context=context
+        request=request,
+        template_name="view_orders/admin.html",
+        context=context,
     )
-    
-    
+
 
 def index(request):
     if not request.user.is_authenticated:
@@ -104,11 +115,10 @@ def index(request):
     orders = ordersBackend.getOrders(user)
     context = {
         "page_title": "Basket",
-        "orders": [
-            unpack_order(order, user)
-            for order in orders
-        ],
+        "orders": [unpack_order(order, user) for order in orders],
     }
     return render(
-        request=request, template_name="view_orders/index.html", context=context
+        request=request,
+        template_name="view_orders/index.html",
+        context=context,
     )

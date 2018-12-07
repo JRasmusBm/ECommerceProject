@@ -2,8 +2,6 @@ from django.shortcuts import render, redirect
 
 from .orders import OrdersBackend
 from .forms import ChangeAmount
-from login_manager.views import login_screen
-from home.models import Orders
 
 
 def removeProduct(request, idproduct):

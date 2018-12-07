@@ -2,13 +2,10 @@ from home.models import Users, Orders, Orderitems, Product
 
 
 class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
-    
     def getOrders(self, user):  # return list of users orders
-        userOrders = Orders.objects.filter(idusers=user.idusers, price__gt=0) #wont return empty order
-        orders = []
-        for order in userOrders:
-            orders.append(order)
-        return orders
+        return list(
+            Orders.objects.filter(idusers=user.idusers, price__gt=0)
+        )
 
     def getProducts(self, orderId):  # returns the products of an order
         i = Orderitems.objects.filter(idorders=orderId)
@@ -30,9 +27,11 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
         )
         o.save()
         return o
-    
+
     def getOrCreateOrder(self, user):
-        if not Orders.objects.filter(idusers=user.idusers, payment=False).exists():
+        if not Orders.objects.filter(
+            idusers=user.idusers, payment=False
+        ).exists():
             return self.createOrder(user)
         return Orders.objects.get(idusers=user.idusers, payment=False)
 
@@ -114,22 +113,22 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
             order = order.get()
             Orderitems.objects.filter(idorders=idorders).delete()
             order.delete()
-    
+
     def getHandeled(self, idorders):
         order = Orders.objects.filter(idorders=idorders)
         if order.exists() and order.count() == 1:
             order = order.get()
-            if order.status == True:
+            if order.status is True:
                 return "Handeled"
             else:
                 return "Not Handeled"
         pass
-    
+
     def getPaid(self, idorders):
         order = Orders.objects.filter(idorders=idorders)
         if order.exists() and order.count() == 1:
             order = order.get()
-            if order.payment == True:
+            if order.payment is True:
                 return "Paid"
             else:
                 return "Not Paid"
@@ -140,4 +139,3 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
         if user.exists() and user.count() == 1:
             user = user.get()
             return user.email
-
