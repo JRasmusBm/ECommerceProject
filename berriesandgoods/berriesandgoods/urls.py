@@ -34,4 +34,8 @@ urlpatterns = [
         "basket/",
         include(("basket.urls", "basket"), namespace="basket"),
     ),
+    path(
+        "view_orders/",
+        include(("view_orders.urls", "view_orders"), namespace="view_orders"),
+    ),
 ]
