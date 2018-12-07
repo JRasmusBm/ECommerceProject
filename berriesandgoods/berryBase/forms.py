@@ -3,7 +3,7 @@ from home.models import Review
 
 
 class AddToCartForm(forms.Form):
-    amount = forms.IntegerField(required=True, min_value=1)
+    amount = forms.IntegerField(required=True)
 
 
 class EditReviewForm(forms.ModelForm):

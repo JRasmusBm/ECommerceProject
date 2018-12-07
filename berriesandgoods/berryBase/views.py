@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db import connection
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from home.models import Product, Review, Users
 from .forms import AddToCartForm, EditReviewForm, SearchForm
@@ -153,11 +154,23 @@ def reviews(request, idproduct):
     )
 
 
-def details(request, idproduct, message=""):
+def details(request, idproduct, message="", success=""):
+    product = Product.objects.raw(
+        "SELECT * FROM product WHERE idproduct=%s;", [idproduct]
+    )[0]
     if request.method == "POST":
         if not request.user.is_authenticated:
             return redirect("login:login")
         form = AddToCartForm(request.POST)
+        form.fields["amount"].validators = [
+            MaxValueValidator(
+                limit_value=product.availability,
+                message="Not enough in stock",
+            ),
+            MinValueValidator(
+                limit_value=1, message="Must be greater than 0"
+            ),
+        ]
         if form.is_valid():
             ordersBackend = OrdersBackend()
             ordersBackend.addProduct(
@@ -165,7 +178,20 @@ def details(request, idproduct, message=""):
                 idproduct=idproduct,
                 amount=int(form.data["amount"]),
             )
-            return redirect("products:details", idproduct=idproduct)
+            return redirect(
+                "products:details",
+                idproduct=idproduct,
+                message=" ".join(
+                    f"""{form.data['amount']} {product.nameproducttype.unit} of
+                    {product.nameproduct} added to shopping basket.""".split()
+                ),
+                success="true",
+            )
+        return redirect(
+            "products:details",
+            idproduct=idproduct,
+            message=form.errors["amount"][0],
+        )
     else:
         form = AddToCartForm()
     reviews = Review.objects.raw(
@@ -179,6 +205,7 @@ def details(request, idproduct, message=""):
             )[0]
         ),
         "form": form,
+        "success": success,
         "message": message,
         "user": request.user,
         "reviewAmount": len(reviews),

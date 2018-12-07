@@ -2,6 +2,7 @@ from home.models import Users, Orders, Orderitems, Product
 
 
 class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
+
     def getOrder(self, email):  # return current active order
         user = Users.objects.get(email=email)
         userOrder = Orders.objects.filter(idusers=user.idusers)
