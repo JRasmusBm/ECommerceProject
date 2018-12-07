@@ -1,11 +1,9 @@
 {% extends "index.html" %}
-
 {% block styles%}
 #content {
   padding: 10px;
   width: 80%;
 }
-
 ul {
   list-style-type: none;
   margin: 0;
@@ -13,12 +11,10 @@ ul {
   overflow: hidden;
   background-color: #444;
 }
-
 li {
   float: left;
   font-family: arial;
 }
-
 li a {
   margin-left: 40px;
   display: block;
@@ -27,12 +23,9 @@ li a {
   padding: 14px 16px;
   text-decoration: none;
 }
-
 li:hover {
-
     cursor: pointer;
 }
-
 ul li ul {
     visibility: hidden;
   opacity: 0;
@@ -41,50 +34,30 @@ ul li ul {
     left: 0;
   display: none;
 }
-
-ul li:hover > ul,
-ul li ul:hover {
+ul li:hover > ul, ul li ul:hover {
   visibility: visible;
   opacity: 1;
   display: block;
-
-
 }
-
 ul li ul li {
-    clear: both;
+  clear: both;
   width: 100%;
 }
-
 {% endblock %}
-
-
-
 {% block content %}
-
 <div id="content">
-
   <ul>
-      <li style="color:white;font-size:40px;"> Sort by
-
-      </li>
-
-
+      <li style="color:white;font-size:40px;">Sort by</li>
       <li><a href="{% url 'filter:index' %}">Price</a>
         <ul class="dropdown">
-          <li><a href="{% url 'filter:sort_by_price' '0-12' %}">0-12</a</li>
+          <li><a href="{% url 'filter:filter' %}">0-12</a</li>
           <li><a href="#">12-30</a></li>
           <li><a href="#">30+</a></li>
         </ul>
       </li>
-
-
-
       <li><a href="{% url 'filter:index' %}">Reviews</a> </li>
       <li><a href="{% url 'filter:index' %}">Quantity</a> </li>
       <li><a href="{% url 'filter:index' %}">Alphabetical</a></li>
   </ul>
-
 </div>
-
 {% endblock %}

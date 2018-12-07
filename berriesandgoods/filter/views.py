@@ -1,16 +1,9 @@
-from django.shortcuts import render, redirect
-from django.db import connection
+from django.shortcuts import render
 
-from home.models import Product, Review, Users
-from .forms import AddToCartForm, EditReviewForm
-
-from .forms import AddToCartForm, EditReviewForm
-import logging
+from home.models import Product
 
 
-
-
- #Unpack the product from
+# Unpack the product from
 def unpack_product(product):
     return {
         "name": product.nameproduct,
@@ -31,25 +24,19 @@ def index(request):
         "user": request.user,
     }
     return render(
-        request=request,
-        template_name="filter/index.html",
-        context=context,
+        request=request, template_name="filter/index.html", context=context
     )
 
-def sort_by_price(request,intervall):
+
+def sort_by_price(request, intervall):
     if intervall == "0-12":
         context = {
-        "page_title": "Result",
-        "products": [
-            unpack_product(product)
-            for product in Product.objects.raw("SELECT * FROM product")]
-
-
-    }
+            "page_title": "Result",
+            "products": [
+                unpack_product(product)
+                for product in Product.objects.raw("SELECT * FROM product")
+            ],
+        }
     return render(
-        request = request,
-        template_name="filter/index.html",
-        context = context,
+        request=request, template_name="filter/index.html", context=context
     )
-
-
