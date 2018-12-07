@@ -72,8 +72,6 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
             )  # lower price of order with the amount of the product
             order.save()
             product.delete()  # delete product
-        else:
-            pass
 
     def pay(self, userId):  # set order to paid
         order = Orders.objects.filter(idusers=userId, payment=False)
@@ -105,7 +103,6 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
             )  # add new price of orderitem amount
             order.save()
             product.save()
-        pass
 
     def removeOrder(self, idorders):  # Delete order
         order = Orders.objects.filter(idorders=idorders)
@@ -122,7 +119,6 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
                 return "Handeled"
             else:
                 return "Not Handeled"
-        pass
 
     def getPaid(self, idorders):
         order = Orders.objects.filter(idorders=idorders)
@@ -132,7 +128,6 @@ class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
                 return "Paid"
             else:
                 return "Not Paid"
-        pass
 
     def getEmail(self, order):
         user = order.user
