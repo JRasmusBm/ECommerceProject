@@ -9,7 +9,7 @@ from home.models import Orders
 def removeOrder(request, idorders):
     if not request.user.is_authenticated:
             return redirect("/")
-    if Orders.objects.get(idorders=idorders).idusers != request.user:
+    if not Orders.objects.filter(idorders=idorders).exists() or Orders.objects.get(idorders=idorders).idusers != request.user:
             return redirect("/")
     ordersBackend = OrdersBackend()
     ordersBackend.removeOrder(idorders=idorders)
@@ -29,7 +29,6 @@ def handleOrder(request, idorders):
     ordersBackend.handle(idorders)
     return redirect("view_orders:admin")
 
-
 def unpack_order(order, user):
     ordersBackend = OrdersBackend()
     return {
@@ -42,10 +41,39 @@ def unpack_order(order, user):
         "statusBool": order.status,
     }
 
-def unpack_orderitem(orderItem):
+def unpack_product(product, orderItem):
     return {
-
+        "name": product.nameproduct,
+        "price": format(product.priceproduct / 100, ".2f"),
+        "unit": product.nameproducttype.unit,
+        "idproduct": product.idproduct,
+        "image": product.img,
+        "amount": format(orderItem.amount),
+        "orderprice": format(
+            (orderItem.priceorderitems * orderItem.amount) / 100, ".2f"
+        ),
+        "orderitem_id": orderItem.idorderitems,
     }
+
+def orderDetail(request, idorders):
+    if not request.user.is_authenticated or not request.user.admin:
+        if not Orders.objects.filter(idorders=idorders).exists() or Orders.objects.get(idorders=idorders).idusers != request.user:
+            return redirect("/")
+    ordersBackend = OrdersBackend()
+    order = Orders.objects.get(idorders=idorders)
+    orderItems = ordersBackend.getProducts(idorders)
+    orderItems = [
+        unpack_product(product, orderItem)
+        for product, orderItem in zip(orderItems[0], orderItems[1])
+    ]
+    context = {
+        "page_title": "Details Order " + str(order.idorders),
+        "order" : unpack_order(order, request.user),
+        "products": orderItems,
+    }    
+    return render(
+        request=request, template_name="view_orders/detail.html", context=context
+    )
 
 def admin(request):
     if not request.user.is_authenticated or not request.user.admin:
