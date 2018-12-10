@@ -4,3 +4,4 @@ htmlcov/
 .coverage
 berriesandgoods/static/**/*
 .vscode
+postgres-data/
