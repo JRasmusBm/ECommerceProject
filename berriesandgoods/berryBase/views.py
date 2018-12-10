@@ -4,7 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from home.models import Product, Review, Users
 from .forms import AddToCartForm, EditReviewForm, SearchForm
-from basket.orders import OrdersBackend
+from basket.orders import ordersBackend
 
 
 def unpack_product(product):
@@ -42,7 +42,9 @@ def index(request):
         "page_title": "Berries",
         "products": [
             unpack_product(product)
-            for product in Product.objects.raw("SELECT * FROM product")
+            for product in Product.objects.raw(
+                "SELECT * FROM product ORDER BY nameproduct"
+            )
         ],
         "user": request.user,
     }
@@ -172,9 +174,8 @@ def details(request, idproduct, message="", success=""):
             ),
         ]
         if form.is_valid():
-            ordersBackend = OrdersBackend()
             ordersBackend.addProduct(
-                username=request.user.email,
+                user=request.user,
                 idproduct=idproduct,
                 amount=int(form.data["amount"]),
             )

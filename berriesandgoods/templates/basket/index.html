@@ -46,13 +46,13 @@ table, th, td {
               <td>{{ product.price }}kr</td>
               <td>{{ product.orderprice }}kr</td>
               <td>
-                <form action="change/{{ product.orderitem_id }}" method="POST">
+                <form action="change/{{ product.idproduct }}" method="POST">
                     {{ formChange.as_p }}
                     {% csrf_token %}
                 </form>
               </td>
               <td>
-                <form action="remove/{{ product.orderitem_id }}" method="get">
+                <form action="remove/{{ product.idproduct }}" method="get">
                   <input type="submit" value="Remove" name="Submit"/>
               </form>
               </td>
@@ -66,11 +66,13 @@ table, th, td {
       <h3>Total</h3>
       <h4>{{ priceorder }}kr</h4>
     </div>
+    {% if not order.is_empty %}
     <div style="text-align: right; float: right; height: 100px">
       <form action="checkout/" method="get">
         <input style="margin-top: 50px" type="submit" value="Checkout" name="Submit"/>
       </form>
     </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

@@ -62,7 +62,12 @@ a {
             <td>{{ order.status }}</td>
             <td>
               <form action="remove/{{ order.id }}" method="get">
-                <input type="submit" value="Remove" name="Submit" {% if order.paymentBool %} disabled {% endif %}/>
+                <input 
+                  type="submit"
+                  value="Remove"
+                  name="Submit"
+                  {% if order.statusBool %} disabled {% endif %}
+                />
               </form>
             </td>
           </tr>
