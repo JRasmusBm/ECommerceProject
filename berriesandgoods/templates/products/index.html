@@ -54,7 +54,6 @@
   float: right;
   justify-self: flex-end;
   display: flex;
-  width: 80%;
   min-height: 25px;
   margin: 20px 0;
   justify-content: flex-end;
@@ -77,19 +76,14 @@
   color: inherit;
   font-size: 20px;
 }
-#menu div {
-  min-width: 200px;
-}
-#menu label {
-  width: 75px;
-}
 #menu-header {
-  min-width: 300px;
+  width: 120px;
 }
 #menu-header a {
   font-size: 40px;
+  text-align: center;
 }
-#menu div,form {
+#menu a,form {
   border-radius: 5px;
   margin: 0;
   padding: 0;
@@ -97,7 +91,14 @@
   opacity: 0.8;
   color:white;
 }
-#menu div:hover {
+.menu-links {
+  display: flex;
+  justify-content: space-around;
+  margin: 0;
+  padding: 0;
+  width: 50%;
+}
+#menu a:hover {
   opacity: 1;
   cursor: pointer;
 }
@@ -105,14 +106,27 @@
 .product-review span {
   margin-left: 10px;
 }
+@media only screen and (max-width: 950px) {
+    #menu {
+        flex-direction: column;
+        align-items: center;
+        min-height: 150px;
+        justify-content: space-between;
+    }
+    .menu-links {
+      width: 100%;
+    } 
+}
 {% endblock %}
 
 {% block content %}
 <div id="menu">
     <div id="menu-header"><a href="{% url 'products:index' %}">Sort by</a></div>
+    <div class="menu-links">
     <div><a href="{% url 'products:index' %}?price={% if flags.price != "highest" %}highest{% else %}lowest{%endif%}">Price</a></div>
     <div><a href="{% url 'products:index' %}?reviews={% if flags.reviews != "highest" %}highest{% else %}lowest{%endif%}">Rating</a></div>
     <div><a href="{% url 'products:index' %}?quantity={% if flags.quantity != "highest" %}highest{% else %}lowest{%endif%}">Quantity</a></div>
+    </div>
     <form class="search_form" method="post"> {% csrf_token %} {{ search_form }} </form>
 </div>
 <div id="product-index-overview">
