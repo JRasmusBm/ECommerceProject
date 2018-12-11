@@ -112,6 +112,14 @@ class Review(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
 
+    def __str__(self):
+        return " ".join(
+            f"""
+                        {self.idusers.email},
+                        {self.idproduct.nameproduct},
+                        {self.rating}""".split()
+        )
+
     class Meta:
         managed = False
         db_table = "review"

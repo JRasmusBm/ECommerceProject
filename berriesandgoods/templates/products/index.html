@@ -23,12 +23,8 @@
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.3);
   transition: 0.3s;
   border-radius: 5px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 50% 1fr;
-  grid-template-areas: 
-    "product-image product-image"
-    "product-name product-price";
+  display: flex;
+  flex-direction: column;
 }
 .product-card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.3);
@@ -38,37 +34,87 @@
   margin: 0;
 }
 .product-name {
-  grid-area: product-name;
   justify-self: center;
   align-self: end;
 }
 .product-price-tag {
-  grid-area: product-price-tag;
 }
 .product-price {
-  grid-area: product-price;
   justify-self: center;
   align-self: end;
 }
 .product-image {
-  grid-area: product-image;
+}
+.product-details {
 }
 .product-image img {
   width: 100%;
 }
 .search_form {
+  float: right;
+  justify-self: flex-end;
   display: flex;
   width: 80%;
   min-height: 25px;
   margin: 20px 0;
   justify-content: flex-end;
 }
+.search_form label {
+  color: white;
+  margin-right: 5px;
+}
+#menu {
+  padding: 10px;
+  width: 80%;
+  min-height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #5B2D02;
+}
+#menu a,label {
+  text-decoration: none;
+  color: inherit;
+  font-size: 20px;
+}
+#menu div {
+  min-width: 200px;
+}
+#menu label {
+  width: 75px;
+}
+#menu-header {
+  min-width: 300px;
+}
+#menu-header a {
+  font-size: 40px;
+}
+#menu div,form {
+  border-radius: 5px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0.8;
+  color:white;
+}
+#menu div:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.product-review span {
+  margin-left: 10px;
+}
 {% endblock %}
 
 {% block content %}
-<form class="search_form" method="post">
-  {% csrf_token %} {{ search_form }}
-</form>
+<div id="menu">
+    <div id="menu-header"><a href="{% url 'products:index' %}">Sort by</a></div>
+    <div><a href="{% url 'products:index' %}?price={% if flags.price != "highest" %}highest{% else %}lowest{%endif%}">Price</a></div>
+    <div><a href="{% url 'products:index' %}?reviews={% if flags.reviews != "highest" %}highest{% else %}lowest{%endif%}">Reviews</a></div>
+    <div><a href="{% url 'products:index' %}?quantity={% if flags.quantity != "highest" %}highest{% else %}lowest{%endif%}">Quantity</a></div>
+    <form class="search_form" method="post"> {% csrf_token %} {{ search_form }} </form>
+</div>
 <div id="product-index-overview">
 {% for product in products %}
 <a href="{% url "products:details" product.idproduct %}">
@@ -80,10 +126,32 @@
       <img src="{% static 'berriesandgoods/img/no-image-icon.jpg' %}" />
     {% endif %}
   </div>
-  <div class="product-name">
-    <h3>{{product.name}}</h3>
+  <div class="product-details" >
+     <div class="product-name">
+       <h3>{{product.name}}</h3>
+     </div>
+     <div class="product-price">{{product.price}} :- / {{product.unit}}</div>
+     {% if product.reviewAmount == 0 %}
+      <div>
+        No reviews
+      </div>
+      {% elif product.reviewAmount == 1 %}
+      <div class="product-review">
+        Rating: {{ product.reviewScore }} / 5 
+        <span>({{ product.reviewAmount }}</span>
+        review) 
+       </div>
+      {% else %}
+      <div class="product-review">
+        Rating: {{ product.reviewScore }} / 5 
+        <span>({{ product.reviewAmount }}</span>
+        reviews) 
+       </div>
+      {% endif %}
+      <div class="product-availability">
+        {{product.availability}} {{product.unit}}
+      </div>
   </div>
-  <div class="product-price">{{product.price}} :- / {{product.unit}}</div>
 </div>
 </a>
 {% endfor %}
