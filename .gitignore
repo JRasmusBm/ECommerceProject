@@ -3,4 +3,5 @@ __pycache__/
 htmlcov/
 .coverage
 berriesandgoods/static/**/*
+.vscode
 postgres-data/

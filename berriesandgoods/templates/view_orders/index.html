@@ -1,0 +1,79 @@
+{% extends "index.html" %}
+
+{% block styles%}
+#content {
+  padding: 10px;
+}
+#products {
+  overflow: hidden;
+  float: left;
+  text-align: center;
+}
+#form {
+  float: right;
+  margin-left: 5px;
+}
+#inpf {
+  width: 90px
+}
+#inpi {
+  width: 70px
+}
+table, th, td {
+  border: 1px solid black;
+  padding: 2px;
+}
+#admin {
+  color: inherit;
+  text-decoration: none;
+  float: right
+}
+a {
+  color: black;
+  text-decoration: none;
+}
+{% endblock %}
+{% block content %}
+<div id="content">
+  <div style="float: left">
+    <h3>
+      Orders
+    </h3>
+  </div>{% if user.admin %}
+  <div id="admin">
+    <h4>
+      <a href="/view_orders/admin/">Admin</a>
+    </h4>
+  </div>{% endif %}
+  <div id="orders">
+      <table style="width:100%">
+          <tr>
+            <th>ID</th>
+            <th>Price</th>
+            <th>Payment</th>
+            <th>Status</th>
+          </tr>
+    {% for order in orders %}
+      <div id="order">
+          <tr>
+            <td><a href="/view_orders/details/{{order.id}}">{{ order.id }}</a></td>
+            <td>{{ order.price }}kr</td>
+            <td>{{ order.payment }}</td>
+            <td>{{ order.status }}</td>
+            <td>
+              <form action="remove/{{ order.id }}" method="get">
+                <input 
+                  type="submit"
+                  value="Remove"
+                  name="Submit"
+                  {% if order.statusBool %} disabled {% endif %}
+                />
+              </form>
+            </td>
+          </tr>
+      </div>
+    {% endfor %}
+  </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,3 +1,5 @@
+CREATE EXTENSION pg_trgm;
+
 CREATE TABLE "producttype" (
   "nameproducttype" VARCHAR(255) NOT NULL UNIQUE,
   "unit" VARCHAR(255) NOT NULL,
@@ -21,6 +23,7 @@ CREATE TABLE "product" (
   "idproduct" INTEGER NOT NULL,
   "nameproduct" VARCHAR(255) NOT NULL,
   "priceproduct" INTEGER NOT NULL,
+  "availability" INTEGER NOT NULL;
   "img" VARCHAR(255),
   "nameproducttype" VARCHAR(255) NOT NULL,
   CONSTRAINT product_pk PRIMARY KEY ("idproduct")
