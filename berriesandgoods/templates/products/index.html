@@ -111,7 +111,7 @@
 <div id="menu">
     <div id="menu-header"><a href="{% url 'products:index' %}">Sort by</a></div>
     <div><a href="{% url 'products:index' %}?price={% if flags.price != "highest" %}highest{% else %}lowest{%endif%}">Price</a></div>
-    <div><a href="{% url 'products:index' %}?reviews={% if flags.reviews != "highest" %}highest{% else %}lowest{%endif%}">Reviews</a></div>
+    <div><a href="{% url 'products:index' %}?reviews={% if flags.reviews != "highest" %}highest{% else %}lowest{%endif%}">Rating</a></div>
     <div><a href="{% url 'products:index' %}?quantity={% if flags.quantity != "highest" %}highest{% else %}lowest{%endif%}">Quantity</a></div>
     <form class="search_form" method="post"> {% csrf_token %} {{ search_form }} </form>
 </div>
