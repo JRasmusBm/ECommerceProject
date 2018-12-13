@@ -6,3 +6,4 @@ berriesandgoods/static/**/*
 .vscode
 postgres-data/
 .idea
+vim-markdown-preview.html
