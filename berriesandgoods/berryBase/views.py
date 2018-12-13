@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db import connection
+
 # from collections import namedtuple
 
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -64,27 +65,33 @@ def build_query(flags):
     Return a tuple containing the string and the variables"""
     query_string = """SELECT p.idproduct, p.nameproduct, p.priceproduct, p.img,
     p.nameproduct, p.availability FROM product as p """
+    where_string = ""
+    order_by_string = ""
     if flags["reviews"] in ["highest", "lowest"]:
         query_string += """
         INNER JOIN (SELECT idproduct, avg(rating) as rating
                     FROM review
                     GROUP BY idproduct) as r ON r.idproduct = p.idproduct
-        ORDER BY rating
         """
+        order_by_string = "ORDER BY rating"
         if flags["reviews"] == "highest":
-            query_string += " DESC"
+            order_by_string += " DESC"
     elif flags["price"] in ["highest", "lowest"]:
-        query_string += " ORDER BY p.priceproduct"
+        order_by_string += " ORDER BY p.priceproduct"
         if flags["price"] == "highest":
-            query_string += " DESC"
+            order_by_string += " DESC"
     elif flags["quantity"] in ["highest", "lowest"]:
-        query_string += " ORDER BY p.availability"
+        order_by_string += " ORDER BY p.availability"
+        where_string += "WHERE p.availability > 0"
         if flags["quantity"] == "highest":
-            query_string += " DESC"
+            order_by_string += " DESC"
     else:
-        query_string += " ORDER BY p.nameproduct"
+        order_by_string += " ORDER BY p.nameproduct"
     query_variables = []
-    return (" ".join(query_string.split()), query_variables)
+    return (
+        " ".join(query_string.split() + [where_string, order_by_string]),
+        query_variables,
+    )
 
 
 def index(request):
@@ -106,7 +113,7 @@ def index(request):
         "products": [unpack_product(product) for product in products],
         "user": request.user,
         "flags": flags,
-        "query": query[0]
+        "query": query[0],
     }
     return render(
         request=request,
