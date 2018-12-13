@@ -30,6 +30,7 @@ urlpatterns = [
         "products/",
         include(("berryBase.urls", "products"), namespace="products"),
     ),
+    path("filter/", include(("filter.urls", "filter"), namespace="filter")),
     path(
         "basket/",
         include(("basket.urls", "basket"), namespace="basket"),

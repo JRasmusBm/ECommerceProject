@@ -186,15 +186,19 @@
         {% csrf_token %}
       </form>
       {% if success and message %}
-      <ul class="hoverlist"><li class="hoveritem success">{{ message }}</li></ul>
+      <ul class="hoverlist">
+        <li class="hoveritem success">{{ message }}</li>
+      </ul>
       {% elif not success and message %}
-      <ul class="hoverlist"><li class="hoveritem error">{{ message }}</li></ul>
+      <ul class="hoverlist">
+        <li class="hoveritem error">{{ message }}</li>
+      </ul>
       {% endif %}
       <a class="review_link" 
         href="{% url "products:reviews" product.idproduct %}"
       >
-      <span>{{reviewScore}} / 5</span>
-      ({{ reviewAmount }} reviews)
+      <span>{{product.reviewScore}} / 5</span>
+      ({{ product.reviewAmount }} reviews)
       </a>
     </div>
   </div>

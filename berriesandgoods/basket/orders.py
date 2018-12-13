@@ -102,7 +102,7 @@ class OrdersBackend:
         Return None"""
         order = self.getOrCreateOrder(user=user)
         if not self.isEmpty(order=order):
-            self.updateAvailability(order=order)
+            self.changeAvailability(order=order)
             order.payment = True
             order.save()
 
@@ -123,7 +123,7 @@ class OrdersBackend:
             orderItem.save()
             self.updatePrices(order=order)
 
-    def updateAvailability(self, order, atCheckout=True):
+    def changeAvailability(self, order, atCheckout=True):
         """Update availabilities of products according to the contents of the
         order. Decrease if order was checked out, increase if removed.
         Return None"""
@@ -135,13 +135,17 @@ class OrdersBackend:
             product.save()
 
     def updatePrices(self, order):
-        """Update the prices of the orderItems and the total price of the
-        order. Return None"""
+        """Update the amounts according to availability, update the prices
+        of the orderItems and updatethe total price of the order.
+        Return None"""
         total_price = 0
         for product, orderItem in self.getProducts(idorders=order.idorders):
-            orderItem.priceorderitems = product.priceproduct
-            total_price += product.priceproduct * orderItem.amount
-            orderItem.save()
+            if product.availability < orderItem.amount:
+                orderItem.delete()
+            else:
+                orderItem.priceorderitems = product.priceproduct
+                total_price += product.priceproduct * orderItem.amount
+                orderItem.save()
         order.price = total_price
         order.save()
 
@@ -150,7 +154,7 @@ class OrdersBackend:
         order_collection = Orders.objects.filter(idorders=idorders)
         if order_collection.exists() and order_collection.count() == 1:
             order = order_collection.get()
-            self.updateAvailability(order=order, atCheckout=False)
+            self.changeAvailability(order=order, atCheckout=False)
             Orderitems.objects.filter(idorders=idorders).delete()
             order.delete()
 
