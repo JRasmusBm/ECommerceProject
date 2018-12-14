@@ -121,8 +121,7 @@
         {% for review in product.reviews %}
         <div class="review">
           <h4>
-            <span>{{ review.rating }} / 5</span> 
-            {{review.user}}
+            <span>{{ review.rating }} / 5</span>{{review.idusers}}
           </h4>
           <div>{{ review.comment }}</div>
         </div>

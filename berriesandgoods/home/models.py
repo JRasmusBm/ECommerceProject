@@ -141,7 +141,7 @@ class Users(AbstractBaseUser):
     objects = MyUserManager()
 
     def __str__(self):
-        return self.email
+        return self.display_name if self.display_name else self.email
 
     def has_perm(self, perm, obj=None):
         return True
