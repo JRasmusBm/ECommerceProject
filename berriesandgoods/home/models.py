@@ -13,7 +13,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Orderitems(models.Model):
-    idorderitems = models.IntegerField(primary_key=True)
+    idorderitems = models.AutoField(primary_key=True)
     amount = models.IntegerField()
     priceorderitems = models.IntegerField(
         db_column="priceorderitems"
@@ -31,7 +31,7 @@ class Orderitems(models.Model):
 
 
 class Orders(models.Model):
-    idorders = models.IntegerField(primary_key=True)
+    idorders = models.AutoField(primary_key=True)
     payment = models.BooleanField()
     status = models.BooleanField()
     price = models.IntegerField(blank=True, null=True)
@@ -49,9 +49,10 @@ class Orders(models.Model):
 
 
 class Product(models.Model):
-    idproduct = models.IntegerField(primary_key=True)
+    idproduct = models.AutoField(primary_key=True)
     nameproduct = models.CharField(max_length=45)
     priceproduct = models.IntegerField(blank=True, null=True)
+    availability = models.IntegerField()
     img = models.CharField(max_length=200, blank=True)
     nameproducttype = models.ForeignKey(
         "Producttype",
@@ -111,6 +112,14 @@ class Review(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
 
+    def __str__(self):
+        return " ".join(
+            f"""
+                        {self.idusers.email},
+                        {self.idproduct.nameproduct},
+                        {self.rating}""".split()
+        )
+
     class Meta:
         managed = False
         db_table = "review"
@@ -132,7 +141,7 @@ class Users(AbstractBaseUser):
     objects = MyUserManager()
 
     def __str__(self):
-        return self.email
+        return self.display_name if self.display_name else self.email
 
     def has_perm(self, perm, obj=None):
         return True

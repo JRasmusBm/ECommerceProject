@@ -1,118 +1,172 @@
-from home.models import Users, Orders, Orderitems, Product
+from django.db.models import Max
+
+from home.models import Orders, Orderitems, Product
 
 
-class OrdersBackend:  # TODO IF ORDER NOT PAID, UPDATE PRICE TO CURRENT
-    def getOrder(self, email):  # return current active order
-        user = Users.objects.get(email=email)
-        userOrder = Orders.objects.filter(idusers=user.idusers)
-        userOrder = userOrder.filter(payment=False)
-        if not userOrder.exists():
-            userOrder = self.createOrder(user)
-        else:
-            userOrder = userOrder.get()
-        return userOrder
+class OrdersBackend:
+    def newOrderItemId(self):
+        """Generate a new idorderitems. return the new id"""
+        raw = Orderitems.objects.all().aggregate(Max("idorderitems"))
+        return raw["idorderitems__max"] + 1 if raw else 0
 
-    def getProducts(self, orderId):  # returns the products of an order
-        i = Orderitems.objects.filter(idorders=orderId)
-        o = []
-        p = []
-        if i.exists():
-            for product in i:
-                p.append(product.idproduct)
-                o.append(product)
-            return [p, o]
-        return [p, o]
+    def newOrderId(self):
+        """Generate a new idorders. Return the new id."""
+        raw = Orders.objects.all().aggregate(Max("idorders"))
+        return raw["idorders__max"] + 1 if raw else 0
 
-    def getPrice(self, orderId):
-        pass
+    def hasOrder(self, user):
+        """Checks if the user has an unpaid order. Return boolean value"""
+        return Orders.objects.filter(
+            idusers=user.idusers, payment=False
+        ).exists()
 
-    def createOrder(self, user):  # connect new order to user
-        n = Orders.objects.all().count()
-        if n != 0:
-            n = Orders.objects.all()[n - 1].idorders + 1
-        o = Orders(
-            idorders=n, payment=False, status=False, price=0, idusers=user
+    def isEmpty(self, order):
+        """Checks if the order is empty. Return boolean value"""
+        return not Orderitems.objects.filter(
+            idorders=order.idorders
+        ).exists()
+
+    def hasProduct(self, idorders, idproduct):
+        """Checks if the order contains the product. Return boolean value"""
+        return idproduct in [
+            product.idproduct for product, _ in self.getProducts(idorders)
+        ]
+
+    def createOrder(self, user):
+        """Create a new order for the current user. Return the order."""
+        order = Orders(
+            idorders=self.newOrderId(),
+            payment=False,
+            status=False,
+            price=0,
+            idusers=user,
         )
-        o.save()
-        return o
+        order.save()
+        return order
 
-    def addProduct(
-        self, username, idproduct, amount
-    ):  # add product to order
-        user = Users.objects.get(email=username)
-        product = Product.objects.get(idproduct=idproduct)
-        userOrder = Orders.objects.filter(idusers=user.idusers)
-        userOrder = userOrder.filter(payment=False)
-        if userOrder.exists():
-            userOrder = userOrder.get()
+    def getOrCreateOrder(self, user):
+        """Get the current unpaid order for the user.
+        Create a new order if none exists.
+        Update with current product prices.
+        Return the order."""
+        if self.hasOrder(user=user):
+            order = Orders.objects.get(idusers=user.idusers, payment=False)
+            self.updatePrices(order)
+            return order
+        return self.createOrder(user)
+
+    def addProduct(self, user, idproduct, amount):
+        """Add product to the user's current unpaid order. Return None"""
+        order = self.getOrCreateOrder(user=user)
+        if self.hasProduct(idorders=order.idorders, idproduct=idproduct):
+            self.changeAmount(idproduct=idproduct, user=user, amount=amount)
         else:
-            userOrder = self.createOrder(user.idusers)
-        userItems = Orderitems.objects.filter(idproduct=idproduct)
-        userItem = userItems.filter(idorders=userOrder.idorders)
-        if userItem.exists():
-            userItem = userItem.get()
-            userItem.amount = userItem.amount + amount
-            userItem.save()
-        else:
-            n = Orderitems.objects.all().count()
-            if n != 0:
-                n = Orders.objects.all()[n - 1].idorders + 1
+            product = Product.objects.get(idproduct=idproduct)
             userItem = Orderitems(
-                idorderitems=n,
+                idorderitems=self.newOrderItemId(),
                 amount=amount,
-                idproduct=Product.objects.get(idproduct=idproduct),
-                idorders=userOrder,
+                idproduct=product,
+                idorders=order,
                 priceorderitems=product.priceproduct,
             )
             userItem.save()
-        userOrder.price = userOrder.price + (product.priceproduct * amount)
-        userOrder.save()
+            self.updatePrices(order)
 
-    def removeProduct(self, idproduct):  # remove product from order
-        product = Orderitems.objects.filter(idorderitems=idproduct)
-        if product.exists():
-            product = product.get()
-            order = Orders.objects.get(idorders=product.idorders.idorders)
-            order.price = order.price - (
-                product.priceorderitems * product.amount
-            )  # lower price of order with the amount of the product
+    def getOrders(self, user):
+        """Get a list of all the user's orders."""
+        return list(
+            Orders.objects.filter(idusers=user.idusers, price__gt=0)
+        )
+
+    def getProducts(self, idorders):
+        """Get the products form an order.
+           Return a list of pairs (product, orderItem)"""
+        return [
+            (orderItem.idproduct, orderItem)
+            for orderItem in Orderitems.objects.filter(
+                idorders=idorders
+            ).order_by("idproduct__nameproduct")
+        ]
+
+    def getEmail(self, order):
+        """Get the e-mail of the user to whom the order belongs.
+        Return None"""
+        user = order.user
+        if user.exists() and user.count() == 1:
+            user = user.get()
+            return user.email
+
+    def pay(self, user):
+        """Update prices, update availability and mark the order as paid.
+        Do nothing if order empty.
+        Return None"""
+        order = self.getOrCreateOrder(user=user)
+        if not self.isEmpty(order=order):
+            self.changeAvailability(order=order)
+            order.payment = True
             order.save()
-            product.delete()  # delete product
-        else:
-            pass
 
-    def pay(self, userId):  # set order to payed
-        order = Orders.objects.filter(idusers=userId)
-        if order.exists():
-            order = order.get()
-            if Orderitems.objects.filter(idorders=order.idorders).exists:
-                order.payment = True
-                order.save()
-
-    def handle(self, orderId):  # set order to handeled
-        order = Orders.objects.get(idOrders=orderId)
-        order.status = True
+    def handle(self, idorders):  # set order to handeled
+        """Mark the order as handled. Return None"""
+        order = Orders.objects.get(idorders=idorders)
+        order.status = not order.status
         order.save()
 
-    def changeAmount(self, idproduct, amount):  # change amount of a product
-        product = Orderitems.objects.filter(idorderitems=idproduct)
-        if product.exists():
-            product = product.get()
-            order = Orders.objects.get(idorders=product.idorders.idorders)
-            order.price = order.price - (
-                product.priceorderitems * product.amount
-            )  # remove price of orderitem amount
-            product.amount = amount
-            product.priceorderitems = Product.objects.get(
-                idproduct=product.idproduct.idproduct
-            ).priceproduct  # update orderitem price
-            order.price = order.price + (
-                product.priceorderitems * amount
-            )  # add new price of orderitem amount
-            order.save()
-            product.save()
-        pass
+    def changeAmount(self, user, idproduct, amount):
+        """Change the amount of the product. Update prices. Return None."""
+        order = self.getOrCreateOrder(user)
+        if self.hasProduct(order.idorders, idproduct):
+            orderItem = Orderitems.objects.get(
+                idorders=order.idorders, idproduct=idproduct
+            )
+            orderItem.amount = amount
+            orderItem.save()
+            self.updatePrices(order=order)
 
-    def delOrder(self, parameter_list):  # Delete order TODO
-        # if handeled, dont delete
-        pass
+    def changeAvailability(self, order, atCheckout=True):
+        """Update availabilities of products according to the contents of the
+        order. Decrease if order was checked out, increase if removed.
+        Return None"""
+        for product, orderItem in self.getProducts(idorders=order.idorders):
+            if atCheckout:
+                product.availability -= orderItem.amount
+            else:
+                product.availability += orderItem.amount
+            product.save()
+
+    def updatePrices(self, order):
+        """Update the amounts according to availability, update the prices
+        of the orderItems and updatethe total price of the order.
+        Return None"""
+        total_price = 0
+        for product, orderItem in self.getProducts(idorders=order.idorders):
+            if product.availability < orderItem.amount:
+                orderItem.delete()
+            else:
+                orderItem.priceorderitems = product.priceproduct
+                total_price += product.priceproduct * orderItem.amount
+                orderItem.save()
+        order.price = total_price
+        order.save()
+
+    def removeOrder(self, idorders):
+        """Remove order and update availability. Return None"""
+        order_collection = Orders.objects.filter(idorders=idorders)
+        if order_collection.exists() and order_collection.count() == 1:
+            order = order_collection.get()
+            self.changeAvailability(order=order, atCheckout=False)
+            Orderitems.objects.filter(idorders=idorders).delete()
+            order.delete()
+
+    def removeProduct(self, user, idproduct):
+        """Remove product from the user's current unpaid order.  Return None"""
+        order = self.getOrCreateOrder(user=user)
+        if self.hasProduct(idorders=order.idorders, idproduct=idproduct):
+            orderItem = Orderitems.objects.get(
+                idproduct=idproduct, idorders=order.idorders
+            )
+            orderItem.delete()  # delete product
+            self.updatePrices(order)
+
+
+ordersBackend = OrdersBackend()

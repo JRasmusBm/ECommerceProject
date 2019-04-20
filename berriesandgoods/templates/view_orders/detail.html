@@ -23,11 +23,15 @@ table, th, td {
   border: 1px solid black;
   padding: 2px;
 }
+a {
+    color: inherit;
+    text-decoration: none;
+}
 {% endblock %}
 {% block content %}
 <div id="content">
   <h3>
-    Shopping Cart
+    Details - Order {{ order.id }}
   </h3>
   <div id="products">
       <table style="width:100%">
@@ -36,7 +40,6 @@ table, th, td {
             <th>Amount</th>
             <th>Price</th>
             <th>Total Price</th>
-            <th >Change Amount</th>
           </tr>
     {% for product in products %}
       <div id="product">
@@ -45,17 +48,6 @@ table, th, td {
               <td>{{ product.amount }}{{ product.unit }}</td>
               <td>{{ product.price }}kr</td>
               <td>{{ product.orderprice }}kr</td>
-              <td>
-                <form action="change/{{ product.idproduct }}" method="POST">
-                    {{ formChange.as_p }}
-                    {% csrf_token %}
-                </form>
-              </td>
-              <td>
-                <form action="remove/{{ product.idproduct }}" method="get">
-                  <input type="submit" value="Remove" name="Submit"/>
-              </form>
-              </td>
             </tr>
       </div>
     {% endfor %}
@@ -64,15 +56,8 @@ table, th, td {
   <div>
     <div style="text-align: left; float: left;">
       <h3>Total</h3>
-      <h4>{{ priceorder }}kr</h4>
+      <h4>{{ order.price }}kr</h4>
     </div>
-    {% if not order.is_empty %}
-    <div style="text-align: right; float: right; height: 100px">
-      <form action="checkout/" method="get">
-        <input style="margin-top: 50px" type="submit" value="Checkout" name="Submit"/>
-      </form>
-    </div>
-    {% endif %}
   </div>
 </div>
 {% endblock %}

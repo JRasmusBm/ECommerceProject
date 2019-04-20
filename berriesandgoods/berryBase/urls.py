@@ -9,6 +9,14 @@ urlpatterns = [
         views.edit_reviews,
         name="edit_reviews",
     ),
+    path(
+        "details/<int:idproduct>/<message>", views.details, name="details"
+    ),
+    path(
+        "details/<int:idproduct>/<message>/<success>",
+        views.details,
+        name="details",
+    ),
     path("search/<term>", views.search, name="search"),
     path("", views.index, name="index"),
 ]
